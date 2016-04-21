@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 
 # Below are our "units".
 # as seen on http://www.openp2p.com/pub/a/python/2004/12/02/tdd_pyunit.html
@@ -174,6 +174,33 @@ def squares_of_sum(max_number):
    return ( sum(n for n in range(1,max_number+1)) * sum(n for n in range(1,max_number+1)) )
 
 """
+   By listing the first six prime numbers 2, 3, 5, 7, 11, and 13, we can see that the 6th prime is 13.
+   What is the 10.001st prime number?
+"""
+def problem7(nth_prime):
+   primos=[]
+   n=2
+   while len(primos) < nth_prime:
+      num_mag=(n)**0.5
+      if (len(primos)==0):
+         primos.append(n)
+      #elif( len([p for p in primos if n % p == 0])==0 ): #Sem multiplos
+         #primos.append(n)
+      ehPrimo=True
+      for p in primos :
+         if n%p == 0:  #Possui algum multiplo - interrompe na hora
+            ehPrimo=False
+            break
+         if p > int(n**0.5): #Verificou mais da raiz quadrada - nao tem mais multiplos possiveis
+            ehPrimo=True
+            break
+      if ehPrimo :
+         primos.append(n)
+      #print len(primos),  n, primos[-1]
+      n=n+1
+   return primos[-1]
+   
+"""
    ***   STOP ALL CODING FROM HERE!!!!
 """
    
@@ -280,6 +307,11 @@ class TestProblem6(unittest.TestCase):
    def testProblem6_100(self):
 		self.assertEqual( problem6(100), 25164150)
 
+class TestProblem7(unittest.TestCase):
+   def testProblem7_6(self):
+		self.assertEqual( problem7(6), 13)
+   def testProblem6_100001(self):
+		self.assertEqual( problem7(10001), 104743)
       
 def main():
     unittest.main()
