@@ -156,6 +156,24 @@ def MDC():
 """
 
 """
+   The sum of the squares of the first ten natural numbers is, 1*1 + 2*2 + ... + 10*10 = 385
+   The square of the sum of the first ten natural numbers is,   (1 + 2 + ... + 10)2 = 552 = 3025
+   Hence the difference between the sum of the squares of the first ten natural numbers and the square of the sum is
+   3025 − 385 = 2640.
+   Find the difference between the sum of the squares of the first one hundred natural numbers and the square of the sum.
+"""
+def problem6(max_number):
+   return squares_of_sum(max_number) - sum_of_squares(max_number)
+
+#sum of the squares of the first <max_number> natural numbers
+def sum_of_squares(max_number):
+   return sum(n*n for n in range(1,max_number+1))
+   
+#square of the sum of the first <max_number> natural numbers 
+def squares_of_sum(max_number):
+   return ( sum(n for n in range(1,max_number+1)) * sum(n for n in range(1,max_number+1)) )
+
+"""
    ***   STOP ALL CODING FROM HERE!!!!
 """
    
@@ -251,6 +269,17 @@ class TestProblem5(unittest.TestCase):
       self.assertEqual( problem5(10), 2520) # 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
    def testProblem5_2(self):
       self.assertEqual( problem5(20), 232792560)
+
+class TestProblem6(unittest.TestCase):
+   def testSumOfSquares_10(self):
+      self.assertEqual( sum_of_squares(10), 385)
+   def testSquareOfSum_10(self):
+      self.assertEqual( squares_of_sum(10), 3025)
+   def testProblem6_10(self):
+		self.assertEqual( problem6(10), 2640)
+   def testProblem6_100(self):
+		self.assertEqual( problem6(100), 25164150)
+
       
 def main():
     unittest.main()
