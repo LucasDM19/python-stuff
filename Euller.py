@@ -96,13 +96,33 @@ def isPalindromicNumberVeryVerySlow(number):
    for i in range( number_length/2 ):
       if str(number)[i] != str(number)[number_length-i-1] : return False
    return True
-
-
+   
 """
    2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
    What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
 """
 def problem5(max_number):
+   return mmc(range(1,max_number+1))
+   
+#Calcula o MDC entre dois numeros.
+def mdc(a,b):
+	if b == 0:
+		return a
+	return mdc(b, a%b)
+	
+#Calcula o MMC de dois numeros. Se baseia na relacao dessa operacao com o MDC.
+def mmc2(a,b):
+	return abs(a*b)/mdc(a,b)
+	
+#Calculo o MMC de uma lista de numeros. Apenas expande a mesma operacao, de forma cumulativa, para cada item.
+def mmc(numeros):
+	temp = 2
+	for i in range(len(numeros)):
+		temp = mmc2(temp,numeros[i])
+	return temp
+   
+#Modo como estava antes. Atualizei.
+def problem5_old(max_number):
    return 2520
    candidate = max_number
    foundNumber = False
@@ -116,6 +136,7 @@ def problem5(max_number):
       candidate += 1
    return min(candidates)
 
+#Acabou que eu nem precisei de usar isso.
 def factorial(n):
     """returns the factorial of n"""
     if n == 0:
@@ -220,14 +241,16 @@ class TestProblem4(unittest.TestCase):
       self.assertEqual( problem4(3), 906609 ) #Demora DEMAIS
 
 class TestProblem5(unittest.TestCase):
+   """ Nao eh mais necessario testar isso
    def testFactorial_1(self):
       self.assertEqual( factorial(1), 1)
    def testFactorial_2(self):
       self.assertEqual( factorial(5), 120)
+   """
    def testProblem5_1(self):
       self.assertEqual( problem5(10), 2520) # 2520 is the smallest number that can be divided by each of the numbers from 1 to 10 without any remainder.
    def testProblem5_2(self):
-      self.assertEqual( problem5(20), 19)
+      self.assertEqual( problem5(20), 232792560)
       
 def main():
     unittest.main()
