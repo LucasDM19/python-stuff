@@ -1,4 +1,6 @@
 ﻿
+def main():
+    print "Rode os testes!"
 
 """
    If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
@@ -236,9 +238,32 @@ def problem8(hugeMotherfuckerNumber, n_digits):
          #print prod
    return max_product
    
-
-def main():
-    unittest.main()
+"""
+A Pythagorean triplet is a set of three natural numbers, a < b < c, for which,
+a2 + b2 = c2
+For example, 32 + 42 = 9 + 16 = 25 = 52.
+There exists exactly one Pythagorean triplet for which a + b + c = 1000.
+Find the product abc.
+"""
+# Como visto em: https://en.wikipedia.org/wiki/Pythagorean_triple#Generating_a_triple
+# Euclid's formula is a fundamental formula for generating Pythagorean triples given an arbitrary pair of integers m and n with m > n > 0. The formula states that the integers
+#a = m2 - n2
+#b = 2mn
+#c = m2 + n2
+def generatePitagoreanTriple(m, n):
+   if m <= n : return (-1, -1, -1) #if m <= n : raise ValueError('m deve ser maior do que n.')
+   if(m <= 0) or (n <= 0) : return (-1, -1, -1) #if (m <= 0) or (n <= 0) : raise ValueError('m e n devem ser maiores do que zero.')
+   a = m*m - n*n
+   b = 2*m*n
+   c = m*m + n*n
+   return (a, b, c)
+   
+def problem9(valueOfABC, maxTry=500):
+   for m in range(-1, maxTry):
+      for n in range(1, m):
+         (a, b, c) = generatePitagoreanTriple(m, n)
+         if a+b+c == valueOfABC:
+            return (a, b, c, a*b*c)
 
 if __name__ == '__main__':
     main()
