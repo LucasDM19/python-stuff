@@ -265,5 +265,44 @@ def problem9(valueOfABC, maxTry=500):
          if a+b+c == valueOfABC:
             return (a, b, c, a*b*c)
 
+"""
+The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
+Find the sum of all the primes below two million.
+"""
+#Metodo para gerar uma lista numeros primos abaixo de maxNumber
+def getPrimesBelow(maxNumber):
+   numeros = range(2, maxNumber)
+   i = 0
+   while True:
+   #for i in range( int(maxNumber ** 0.5) ): #Euller ai
+      primo = numeros[i] #Primeiro primo
+      numeros = [x for x in numeros if x % primo != 0 or x == primo]
+      #print "p=", primo, ",max=",int(maxNumber ** 0.5)
+      if primo > int(maxNumber ** 0.5) : break #Criterio zoado para sair
+      i += 1 #Proximo primo da lista
+   return numeros
+   
+#Modo antigo - Demorava cerca de 12 segundos
+def getPrimesBelowOld(maxNumber):
+   primos = [2]
+   n=2
+   while n < maxNumber:
+      num_mag=(n)**0.5
+      ehPrimo=True
+      for p in primos :
+         if n%p == 0:  #Possui algum multiplo - interrompe na hora
+            ehPrimo=False
+            break
+         if p > int(n**0.5): #Verificou mais da raiz quadrada - nao tem mais multiplos possiveis
+            ehPrimo=True
+            break
+      if ehPrimo :
+         primos.append(n)
+      n=n+1
+   return primos
+
+def problem10(maxPrime):
+   return sum( getPrimesBelow(maxPrime) )
+            
 if __name__ == '__main__':
     main()
