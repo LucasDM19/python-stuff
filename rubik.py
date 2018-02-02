@@ -15,30 +15,54 @@ class Color :
       return str( self.id )
 
 class rubikCube:
-   #cubo = Color[6][3][3]
-   cubo = [[[Color for x in range(6)] for y in range(3)] for z in range(3)]
-
-def rotacionaFace(face):
-   #face = [[Color(0, 3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] 
-   print face[0][0],"|",face[0][1],"|",face[0][2]
-   print face[1][0],"|",face[1][1],"|",face[1][2]
-   print face[2][0],"|",face[2][1],"|",face[2][2]
-   print "_________________________________"
-
-   #Tentarei agora rotacionar a tal face
-   from copy import deepcopy
-   face2 = deepcopy(face) #aquela Dolly clonada
-
-   for i in range(MAX_LINE):
-      for j in range(MAX_COLUMN):
-         face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
-   #face2 = [face[2-j][i] for i in range(3) for j in range(3)] 
-   face = face2
-   print face[0][0],"|",face[0][1],"|",face[0][2]
-   print face[1][0],"|",face[1][1],"|",face[1][2]
-   print face[2][0],"|",face[2][1],"|",face[2][2]
-   print "_________________________________"
-   return face
+   MAX_FACES = 6
+   MAX_LINE = 3
+   MAX_COLUMN = 3
+   cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
+   
+   def __str__(self):
+      BLANK_LINE = "      "
+      FILLER = "-----------------------------" 
+      line1  = BLANK_LINE + str(self.cubo[1][0][0])+"|"+str(self.cubo[1][0][1])+"|"+str(self.cubo[1][0][2]) + "\n"
+      line2  = BLANK_LINE + str(self.cubo[1][1][0])+"|"+str(self.cubo[1][1][1])+"|"+str(self.cubo[1][1][2]) + "\n"
+      line3  = BLANK_LINE + str(self.cubo[1][2][0])+"|"+str(self.cubo[1][2][1])+"|"+str(self.cubo[1][2][2]) + "\n"
+      line4  = FILLER + "\n"
+      line5  = str(self.cubo[5][0][0])+"|"+str(self.cubo[5][0][1])+"|"+str(self.cubo[5][0][2])+"|"+str(self.cubo[0][0][0])+"|"+str(self.cubo[0][0][1])+"|"+str(self.cubo[0][0][2])+"|"+str(self.cubo[2][0][0])+"|"+str(self.cubo[2][0][1])+"|"+str(self.cubo[2][0][2])+"|"+str(self.cubo[3][0][0])+"|"+str(self.cubo[3][0][1])+"|"+str(self.cubo[3][0][2]) + "\n"
+      line6  = str(self.cubo[5][1][0])+"|"+str(self.cubo[5][1][1])+"|"+str(self.cubo[5][1][2])+"|"+str(self.cubo[0][1][0])+"|"+str(self.cubo[0][1][1])+"|"+str(self.cubo[0][1][2])+"|"+str(self.cubo[2][1][0])+"|"+str(self.cubo[2][1][1])+"|"+str(self.cubo[2][1][2])+"|"+str(self.cubo[3][1][0])+"|"+str(self.cubo[3][1][1])+"|"+str(self.cubo[3][1][2]) + "\n"
+      line7  = str(self.cubo[5][2][0])+"|"+str(self.cubo[5][2][1])+"|"+str(self.cubo[5][2][2])+"|"+str(self.cubo[0][2][0])+"|"+str(self.cubo[0][2][1])+"|"+str(self.cubo[0][2][2])+"|"+str(self.cubo[2][2][0])+"|"+str(self.cubo[2][2][1])+"|"+str(self.cubo[2][2][2])+"|"+str(self.cubo[3][2][0])+"|"+str(self.cubo[3][2][1])+"|"+str(self.cubo[3][2][2]) + "\n"
+      line8  = FILLER + "\n"
+      line9  = BLANK_LINE + str(self.cubo[4][0][0])+"|"+str(self.cubo[4][0][1])+"|"+str(self.cubo[4][0][2]) + "\n"
+      line10 = BLANK_LINE + str(self.cubo[4][1][0])+"|"+str(self.cubo[4][1][1])+"|"+str(self.cubo[4][1][2]) + "\n"
+      line11 = BLANK_LINE + str(self.cubo[4][2][0])+"|"+str(self.cubo[4][2][1])+"|"+str(self.cubo[4][2][2]) + "\n"
+      return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11
+      
+   #Rotaciono o cubo no sentido horário
+   def rotacionaFace(self,indice):
+      face = self.cubo[indice]
+      #Tentarei agora rotacionar a tal face
+      from copy import deepcopy
+      face2 = deepcopy(face) #aquela Dolly clonada
+      for i in range(MAX_LINE):
+         for j in range(MAX_COLUMN):
+            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      
+      #Rotacionando os vizinhos
+      VIZINHOS = [[1, 4, 2, 5],
+                  [4, 4, 2, 5],
+                  [1, 4, 3, 0],
+                  [1, 4, 5, 2],
+                  [0, 1, 2, 5],
+                  [1, 4, 0, 3], ]
+      ACIMA, ABAIXO, DIREITA, ESQUERDA = range(4)
+      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      for i in range(MAX_LINE):
+         cubo2[VIZINHOS[indice][ACIMA]][2][i] = self.cubo[VIZINHOS[indice][ESQUERDA]][MAX_LINE-1-i][2] #ACIMA
+         cubo2[VIZINHOS[indice][DIREITA]][i][0] = self.cubo[VIZINHOS[indice][ACIMA]][2][i]            #DIREITA
+         cubo2[VIZINHOS[indice][ABAIXO]][0][i] = self.cubo[VIZINHOS[indice][DIREITA]][MAX_LINE-1-i][0] #ABAIXO
+         cubo2[VIZINHOS[indice][ESQUERDA]][i][2] = self.cubo[VIZINHOS[indice][ABAIXO]][0][i]            #ESQUERDA
+      self.cubo = cubo2 #desclonou
+      self.cubo[indice] = face2
+   
 #c = Color(2)
 #print c
 
@@ -47,11 +71,26 @@ MAX_FACES = 6
 MAX_LINE = 3
 MAX_COLUMN = 3
 cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
-print cubo[4][1][1]
-cubo[0] = rotacionaFace( cubo[0] ) 
-cubo[0] = rotacionaFace( cubo[0] ) 
-cubo[0] = rotacionaFace( cubo[0] ) 
-cubo[0] = rotacionaFace( cubo[0] ) 
+#print cubo[4][1][1]
+
+r = rubikCube()
+print r
+r.rotacionaFace(0)
+#r.rotacionaFace(0)
+#r.rotacionaFace(0)
+#r.rotacionaFace(0)
+print r
+
+
+#Rotacionando 4 vezes
+#cubo[0] = rotacionaFace( cubo[0] ) 
+#cubo[0] = rotacionaFace( cubo[0] ) 
+#cubo[0] = rotacionaFace( cubo[0] ) 
+#cubo[0] = rotacionaFace( cubo[0] ) 
+
+
+
+
 
 """
 Testar se:
