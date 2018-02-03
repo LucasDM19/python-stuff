@@ -19,6 +19,15 @@ class rubikCube:
    MAX_LINE = 3
    MAX_COLUMN = 3
    cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
+   #Definindo quem e vizinho de quem
+   VIZINHOS = [[1, 4, 2, 5],
+                  [4, 4, 2, 5],
+                  [1, 4, 3, 0],
+                  [1, 4, 5, 2],
+                  [0, 1, 2, 5],
+                  [1, 4, 0, 3], ]
+   ACIMA, ABAIXO, DIREITA, ESQUERDA = range(4)
+   
    
    def __str__(self):
       BLANK_LINE = "      "
@@ -36,8 +45,8 @@ class rubikCube:
       line11 = BLANK_LINE + str(self.cubo[4][2][0])+"|"+str(self.cubo[4][2][1])+"|"+str(self.cubo[4][2][2]) + "\n"
       return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11
       
-   #Rotaciono o cubo no sentido horário
-   def rotacionaFace(self,indice):
+   """ Rotaciona a frente, em 90 graus, sentido horario """
+   def rotacionaFaceHor(self,indice): #antigo rotacionaFace
       face = self.cubo[indice]
       #Tentarei agora rotacionar a tal face
       from copy import deepcopy
@@ -47,22 +56,29 @@ class rubikCube:
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       
       #Rotacionando os vizinhos
-      VIZINHOS = [[1, 4, 2, 5],
-                  [4, 4, 2, 5],
-                  [1, 4, 3, 0],
-                  [1, 4, 5, 2],
-                  [0, 1, 2, 5],
-                  [1, 4, 0, 3], ]
-      ACIMA, ABAIXO, DIREITA, ESQUERDA = range(4)
       cubo2 = deepcopy(cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
-         cubo2[VIZINHOS[indice][ACIMA]][2][i] = self.cubo[VIZINHOS[indice][ESQUERDA]][MAX_LINE-1-i][2] #ACIMA
-         cubo2[VIZINHOS[indice][DIREITA]][i][0] = self.cubo[VIZINHOS[indice][ACIMA]][2][i]            #DIREITA
-         cubo2[VIZINHOS[indice][ABAIXO]][0][i] = self.cubo[VIZINHOS[indice][DIREITA]][MAX_LINE-1-i][0] #ABAIXO
-         cubo2[VIZINHOS[indice][ESQUERDA]][i][2] = self.cubo[VIZINHOS[indice][ABAIXO]][0][i]            #ESQUERDA
+         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]][MAX_LINE-1-i][2] #ACIMA
+         cubo2[self.VIZINHOS[indice][self.DIREITA] ][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]   ][2]           [i] #DIREITA
+         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA] ][MAX_LINE-1-i][0] #ABAIXO 
+         cubo2[self.VIZINHOS[indice][self.ESQUERDA]][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]  ][0]           [i] #ESQUERDA
       self.cubo = cubo2 #desclonou
       self.cubo[indice] = face2
    
+   """ Rotaciona a frente, em 90 graus, sentido anti-horario """
+   def rotacionaFaceAnt(self,indice):
+      #Na pratica, eu poderia fazer tres rotacoes no sentido horario. Isso daria no mesmo. Seria o equiavelente a fazer uma subtracao binaria usando apenas a soma.
+      self.rotacionaFaceHor(indice)
+      self.rotacionaFaceHor(indice)
+      self.rotacionaFaceHor(indice)
+   
+   """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
+   def rotacionaEsqHor(self,indice):
+      #Na pratica, e equivalente a rotacionar a face esquerda no sentido horario
+      indice_alt = self.VIZINHOS[indice][self.ESQUERDA] #Pego face que esta na esquerda
+      print indice_alt
+      self.rotacionaFaceHor(indice_alt)
+      
 #c = Color(2)
 #print c
 
@@ -75,10 +91,15 @@ cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LIN
 
 r = rubikCube()
 print r
-r.rotacionaFace(0)
-#r.rotacionaFace(0)
-#r.rotacionaFace(0)
-#r.rotacionaFace(0)
+#r.rotacionaFaceHor(0)
+#r.rotacionaFaceHor(0)
+#r.rotacionaFaceHor(0)
+#r.rotacionaFaceHor(0)
+#r.rotacionaFaceAnt(0)
+#r.rotacionaFaceAnt(0)
+#r.rotacionaFaceAnt(0)
+#r.rotacionaFaceAnt(0)
+r.rotacionaEsqHor(0) #Esta incorreto. Faces teriam de mudar dependendo da face. Questao de pecas vizinhas e nao de faces vizinhas?
 print r
 
 
