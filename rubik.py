@@ -20,13 +20,13 @@ class rubikCube:
    MAX_COLUMN = 3
    cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
    #Definindo quem e vizinho de quem
-   VIZINHOS = [[1, 4, 2, 5],
-                  [4, 4, 2, 5],
-                  [1, 4, 3, 0],
-                  [1, 4, 5, 2],
-                  [0, 1, 2, 5],
-                  [1, 4, 0, 3], ]
-   ACIMA, ABAIXO, DIREITA, ESQUERDA = range(4)
+   VIZINHOS = [[1, 4, 2, 5, 3],
+               [3, 0, 2, 5, 4],
+               [1, 4, 3, 0, 5],
+               [1, 4, 5, 2, 0],
+               [0, 1, 2, 5, 1],
+               [1, 4, 0, 3, 2], ]
+   ACIMA, ABAIXO, DIREITA, ESQUERDA, OPOSTO = range(5)
    
    
    def __str__(self):
@@ -46,7 +46,7 @@ class rubikCube:
       return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11
       
    """ Rotaciona a frente, em 90 graus, sentido horario """
-   def rotacionaFaceHor(self,indice): #antigo rotacionaFace
+   def rotacionaFrenteHor(self,indice): #antigo rotacionaFace
       face = self.cubo[indice]
       #Tentarei agora rotacionar a tal face
       from copy import deepcopy
@@ -66,7 +66,7 @@ class rubikCube:
       self.cubo[indice] = face2
    
    """ Rotaciona a frente, em 90 graus, sentido anti-horario """
-   def rotacionaFaceAnt(self,indice):
+   def rotacionaFrenteAnt(self,indice):
       #Na pratica, eu poderia fazer tres rotacoes no sentido horario. Isso daria no mesmo. Seria o equiavelente a fazer uma subtracao binaria usando apenas a soma.
       self.rotacionaFaceHor(indice)
       self.rotacionaFaceHor(indice)
@@ -74,10 +74,25 @@ class rubikCube:
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
    def rotacionaEsqHor(self,indice):
-      #Na pratica, e equivalente a rotacionar a face esquerda no sentido horario
+      #Na pratica, e equivalente a rotacionar a face esquerda no sentido horario, so que nao
       indice_alt = self.VIZINHOS[indice][self.ESQUERDA] #Pego face que esta na esquerda
-      print indice_alt
-      self.rotacionaFaceHor(indice_alt)
+      face = self.cubo[indice_alt] #Trabalho apenas com a face esquerda
+      from copy import deepcopy
+      face2 = deepcopy(face) #aquela Dolly clonada
+      for i in range(MAX_LINE):
+         for j in range(MAX_COLUMN):
+            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      #self.cubo[indice_alt] = face2 #face retorna
+      
+      #Rotacionando os vizinhos
+      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      for i in range(MAX_LINE):
+         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][0] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]  ][MAX_LINE-1-i][2] #ACIMA
+         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][0] = self.cubo[indice]                              [i]           [0] #ABAIXO 
+         cubo2[indice]                              [i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]   ][i]           [0] #atual
+         cubo2[self.VIZINHOS[indice][self.OPOSTO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]  ][MAX_LINE-1-i][0] #OPOSTO
+      self.cubo = cubo2 #desclonou
+      self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
       
 #c = Color(2)
 #print c
@@ -91,15 +106,9 @@ cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LIN
 
 r = rubikCube()
 print r
-#r.rotacionaFaceHor(0)
-#r.rotacionaFaceHor(0)
-#r.rotacionaFaceHor(0)
-#r.rotacionaFaceHor(0)
+r.rotacionaFrenteHor(0)
 #r.rotacionaFaceAnt(0)
-#r.rotacionaFaceAnt(0)
-#r.rotacionaFaceAnt(0)
-#r.rotacionaFaceAnt(0)
-r.rotacionaEsqHor(0) #Esta incorreto. Faces teriam de mudar dependendo da face. Questao de pecas vizinhas e nao de faces vizinhas?
+#r.rotacionaEsqHor(0) #Agora sim
 print r
 
 
@@ -119,5 +128,5 @@ Testar se:
 2) Se Color errada gera a exception
 3) print face[2][1] tem de ser 7, sendo face = 0 
 4) face normal e rotacionada. (0 1 2 3 4 5 6 7 8) vira (6 3 0 7 4 1 8 5 2)
-5) rotacionar 4 vezes teria de deixar igual no inicio
+5) rotacionar 4 vezes teria de deixar igual no inicio - para cada tipo de movimento
 """
