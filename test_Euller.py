@@ -153,6 +153,17 @@ class TestProblem10(unittest.TestCase):
    def testProblem10_2000000(self):
       self.assertEqual( problem10(2000000), 142913828922 )  #Esse teste demora cinco segundos
       
+class TestProblem10(unittest.TestCase):
+   def testMatrixConversion_simples(self):
+      self.assertEqual( convertStringToMatrix("08 02 22 97"), [[8, 2, 22, 97]] )
+   def testMatrixConversion_umaLinha(self):
+      self.assertEqual( convertStringToMatrix("08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08"), [[8, 2, 22, 97, 38, 15, 0, 40, 0, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 8]] )
+   def testMatrixConversion_duasLinhas(self):
+      self.assertEqual( convertStringToMatrix("""08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08
+49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00"""), [[8, 2, 22, 97, 38, 15, 0, 40, 0, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 8],[49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 4, 56, 62, 0] ] )
+   #def textProblem10_z(self):
+   #   self.
+      
 if __name__ == '__main__':
     main()
       
