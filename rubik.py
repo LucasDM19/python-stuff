@@ -12,13 +12,13 @@ class Color :
    def getValue(self):
       return self.value
    def __str__(self):
-      return str( self.id )
+      return str(self.value) #return str( self.id )
 
 class rubikCube:
    MAX_FACES = 6
    MAX_LINE = 3
    MAX_COLUMN = 3
-   cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
+   cubo = [[[Color(z, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
    #Definindo quem e vizinho de quem
    VIZINHOS = [[1, 4, 2, 5, 3],
                [3, 0, 2, 5, 4],
@@ -56,7 +56,7 @@ class rubikCube:
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]][MAX_LINE-1-i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.DIREITA] ][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]   ][2]           [i] #DIREITA
@@ -85,7 +85,7 @@ class rubikCube:
       #self.cubo[indice_alt] = face2 #face retorna
       
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][0] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]  ][MAX_LINE-1-i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][0] = self.cubo[indice]                              [i]           [0] #ABAIXO 
@@ -110,7 +110,7 @@ class rubikCube:
          for j in range(MAX_COLUMN):
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][2] = self.cubo[indice]                                         [i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]  [MAX_LINE-1-i][0] #ABAIXO 
@@ -135,7 +135,7 @@ class rubikCube:
          for j in range(MAX_COLUMN):
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ESQUERDA]][0][i] = self.cubo[indice]                                         [0][i] #ESQUERDA
          cubo2[self.VIZINHOS[indice][self.DIREITA]] [0][i] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]             [0][i] #DIREITA
@@ -160,7 +160,7 @@ class rubikCube:
          for j in range(MAX_COLUMN):
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ESQUERDA]][2][i] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]             [2][i] #ESQUERDA
          cubo2[self.VIZINHOS[indice][self.DIREITA]] [2][i] = self.cubo[indice]                                         [2][i] #DIREITA
@@ -186,7 +186,7 @@ class rubikCube:
             face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
       
       #Rotacionando os vizinhos
-      cubo2 = deepcopy(cubo) #aquela Dolly clonada
+      cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA]]            [i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]]           [i][0] #ABAIXO 
@@ -214,11 +214,11 @@ cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LIN
 r = rubikCube()
 print r
 r.rotacionaFrenteHor(0)
-#r.rotacionaEsqHor(0)
-#r.rotacionaDirHor(0)
-#r.rotacionaCimaHor(0)
-#r.rotacionaBaixoHor(0)
-#r.rotacionaAtrasHor(0)
+r.rotacionaEsqHor(0)
+r.rotacionaDirHor(0)
+r.rotacionaCimaHor(0)
+r.rotacionaBaixoHor(0)
+r.rotacionaAtrasHor(0)
 print r
 
 
