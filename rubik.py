@@ -202,16 +202,40 @@ class rubikCube:
       self.rotacionaAtrasHor(indice)
    
 
-r = rubikCube()
-print r
-r.rotacionaFrenteHor()
-r.rotacionaEsqHor()
-r.rotacionaDirHor()
-r.rotacionaCimaHor()
-r.rotacionaBaixoHor()
-r.rotacionaAtrasHor()
-print r
-
+class RubikCubeXplorer:
+   cubo = None
+   def __init__(self, cubo=None):
+      if cubo is None :
+         cubo = rubikCube()
+      self.cubo = cubo
+   
+   """ Obtem uma lista de comandos para serem feitos num cubo """
+   def efetuaMovimentos(self, lista_movimentos ):
+      for movimento in lista_movimentos:
+         switcher = {
+            "F" : self.cubo.rotacionaFrenteHor,
+            "R" : self.cubo.rotacionaDirHor,
+            "L" : self.cubo.rotacionaEsqHor,
+            "U" : self.cubo.rotacionaCimaHor,
+            "D" : self.cubo.rotacionaBaixoHor,
+            "B" : self.cubo.rotacionaAtrasHor,
+         }
+         func = switcher.get(movimento, "Invalido")
+         func()  #Executo a funcao
+      
+   """ Obtem um cubo magico e efetua movimentos aleatorios """
+   def embaralhaCubo(self, repeticoes=50):
+      from random import randrange
+      lista_movimentos = []
+      switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
+      for i in range(repeticoes):
+         lista_movimentos.append( switcher[ randrange(self.cubo.MAX_FACES) ] )
+      self.efetuaMovimentos( lista_movimentos  )
+   
+x = RubikCubeXplorer()
+#x.efetuaMovimentos( ["F","F","F","F",] )
+x.embaralhaCubo(500)
+print x.cubo
 
 """
 Testar se:
