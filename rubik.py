@@ -46,97 +46,97 @@ class rubikCube:
       return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11
       
    """ Rotaciona a frente, em 90 graus, sentido horario """
-   def rotacionaFrenteHor(self,indice): #antigo rotacionaFace
+   def rotacionaFrenteHor(self,indice=0): #antigo rotacionaFace
       face = self.cubo[indice]
       #Tentarei agora rotacionar a tal face
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]][MAX_LINE-1-i][2] #ACIMA
+      for i in range(self.MAX_LINE):
+         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]][self.MAX_LINE-1-i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.DIREITA] ][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]   ][2]           [i] #DIREITA
-         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA] ][MAX_LINE-1-i][0] #ABAIXO 
+         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA] ][self.MAX_LINE-1-i][0] #ABAIXO 
          cubo2[self.VIZINHOS[indice][self.ESQUERDA]][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]  ][0]           [i] #ESQUERDA
       self.cubo = cubo2 #desclonou
       self.cubo[indice] = face2
    
    """ Rotaciona a frente, em 90 graus, sentido anti-horario """
-   def rotacionaFrenteAnt(self,indice):
+   def rotacionaFrenteAnt(self,indice=0):
       #Na pratica, eu poderia fazer tres rotacoes no sentido horario. Isso daria no mesmo. Seria o equiavelente a fazer uma subtracao binaria usando apenas a soma.
       self.rotacionaFaceHor(indice)
       self.rotacionaFaceHor(indice)
       self.rotacionaFaceHor(indice)
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
-   def rotacionaEsqHor(self,indice):
+   def rotacionaEsqHor(self,indice=0):
       #Na pratica, e equivalente a rotacionar a face esquerda no sentido horario, so que nao
       indice_alt = self.VIZINHOS[indice][self.ESQUERDA] #Pego face que esta na esquerda
       face = self.cubo[indice_alt] #Trabalho apenas com a face esquerda
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       #self.cubo[indice_alt] = face2 #face retorna
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][0] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]  ][MAX_LINE-1-i][2] #ACIMA
+      for i in range(self.MAX_LINE):
+         cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][0] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]  ][self.MAX_LINE-1-i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][0] = self.cubo[indice]                              [i]           [0] #ABAIXO 
          cubo2[indice]                              [i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]   ][i]           [0] #atual
-         cubo2[self.VIZINHOS[indice][self.OPOSTO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]  ][MAX_LINE-1-i][0] #OPOSTO
+         cubo2[self.VIZINHOS[indice][self.OPOSTO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]  ][self.MAX_LINE-1-i][0] #OPOSTO
       self.cubo = cubo2 #desclonou
       self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
       
    """ Rotaciona a face esquerda, de cima para baixo, sentido anti-horario """
-   def rotacionaEsqAnt(self,indice):
+   def rotacionaEsqAnt(self,indice=0):
       self.rotacionaEsqHor(indice)
       self.rotacionaEsqHor(indice)
       self.rotacionaEsqHor(indice)
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
-   def rotacionaDirHor(self,indice):
+   def rotacionaDirHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.DIREITA] #Pego face que esta na direita
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
+      for i in range(self.MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][i][2] = self.cubo[indice]                                         [i][2] #ACIMA
-         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]  [MAX_LINE-1-i][0] #ABAIXO 
+         cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][i][2] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]  [self.MAX_LINE-1-i][0] #ABAIXO 
          cubo2[indice]                              [i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]]             [i][2] #atual
-         cubo2[self.VIZINHOS[indice][self.OPOSTO]  ][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]]   [MAX_LINE-1-i][2] #OPOSTO
+         cubo2[self.VIZINHOS[indice][self.OPOSTO]  ][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]]   [self.MAX_LINE-1-i][2] #OPOSTO
       self.cubo = cubo2 #desclonou
       self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido anti-horario """
-   def rotacionaDirAnt(self,indice):
+   def rotacionaDirAnt(self,indice=0):
       self.rotacionaDirHor(indice)
       self.rotacionaDirHor(indice)
       self.rotacionaDirHor(indice)
    
    """ Rotaciona a face de cima, sentido horario """
-   def rotacionaCimaHor(self,indice):
+   def rotacionaCimaHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.ACIMA] #Pego face que esta acima
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
+      for i in range(self.MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ESQUERDA]][0][i] = self.cubo[indice]                                         [0][i] #ESQUERDA
          cubo2[self.VIZINHOS[indice][self.DIREITA]] [0][i] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]             [0][i] #DIREITA
          cubo2[indice]                              [0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA]]            [0][i] #atual
@@ -145,23 +145,23 @@ class rubikCube:
       self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
       
    """ Rotaciona a face de cima, sentido anti-horario """
-   def rotacionaCimaAnt(self,indice):
+   def rotacionaCimaAnt(self,indice=0):
       self.rotacionaCimaHor(indice)
       self.rotacionaCimaHor(indice)
       self.rotacionaCimaHor(indice)
    
    """ Rotaciona a face de baixo, sentido horario """
-   def rotacionaBaixoHor(self,indice):
+   def rotacionaBaixoHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.ABAIXO] #Pego face que esta acima
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
+      for i in range(self.MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ESQUERDA]][2][i] = self.cubo[self.VIZINHOS[indice][self.OPOSTO]]             [2][i] #ESQUERDA
          cubo2[self.VIZINHOS[indice][self.DIREITA]] [2][i] = self.cubo[indice]                                         [2][i] #DIREITA
          cubo2[indice]                              [2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]]           [2][i] #atual
@@ -170,66 +170,47 @@ class rubikCube:
       self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
    
    """ Rotaciona a face de baixo, sentido anti-horario """
-   def rotacionaBaixoAnt(self,indice):
+   def rotacionaBaixoAnt(self,indice=0):
       self.rotacionaBaixoHor(indice)
       self.rotacionaBaixoHor(indice)
       self.rotacionaBaixoHor(indice)
    
    """ Rotaciona atras, sentido horario """
-   def rotacionaAtrasHor(self,indice):
+   def rotacionaAtrasHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.OPOSTO] #Pego face que esta oposta
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
       from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(MAX_LINE):
-         for j in range(MAX_COLUMN):
-            face2[i][j] = face[MAX_LINE-1-j][i] #sim, vira apenas isso
+      for i in range(self.MAX_LINE):
+         for j in range(self.MAX_COLUMN):
+            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
-      for i in range(MAX_LINE):
+      for i in range(self.MAX_LINE):
          cubo2[self.VIZINHOS[indice][self.ACIMA]   ][0][i] = self.cubo[self.VIZINHOS[indice][self.DIREITA]]            [i][2] #ACIMA
          cubo2[self.VIZINHOS[indice][self.ABAIXO]  ][2][i] = self.cubo[self.VIZINHOS[indice][self.ESQUERDA]]           [i][0] #ABAIXO 
-         cubo2[self.VIZINHOS[indice][self.DIREITA] ][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]]  [2][MAX_LINE-1-i] #DIREITA
-         cubo2[self.VIZINHOS[indice][self.ESQUERDA]][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]]   [0][MAX_LINE-1-i] #ESQUERDA
+         cubo2[self.VIZINHOS[indice][self.DIREITA] ][i][2] = self.cubo[self.VIZINHOS[indice][self.ABAIXO]]  [2][self.MAX_LINE-1-i] #DIREITA
+         cubo2[self.VIZINHOS[indice][self.ESQUERDA]][i][0] = self.cubo[self.VIZINHOS[indice][self.ACIMA]]   [0][self.MAX_LINE-1-i] #ESQUERDA
       self.cubo = cubo2 #desclonou
       self.cubo[indice_alt] = face2
    
    """ Rotaciona atras, sentido anti-horario """
-   def rotacionaAtrasAnt(self,indice):
+   def rotacionaAtrasAnt(self,indice=0):
       self.rotacionaAtrasHor(indice)
       self.rotacionaAtrasHor(indice)
       self.rotacionaAtrasHor(indice)
    
-#c = Color(2)
-#print c
-
-#depois isso vira objeto
-MAX_FACES = 6
-MAX_LINE = 3
-MAX_COLUMN = 3
-cubo = [[[Color(0, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
-#print cubo[4][1][1]
 
 r = rubikCube()
 print r
-r.rotacionaFrenteHor(0)
-r.rotacionaEsqHor(0)
-r.rotacionaDirHor(0)
-r.rotacionaCimaHor(0)
-r.rotacionaBaixoHor(0)
-r.rotacionaAtrasHor(0)
+r.rotacionaFrenteHor()
+r.rotacionaEsqHor()
+r.rotacionaDirHor()
+r.rotacionaCimaHor()
+r.rotacionaBaixoHor()
+r.rotacionaAtrasHor()
 print r
-
-
-#Rotacionando 4 vezes
-#cubo[0] = rotacionaFace( cubo[0] ) 
-#cubo[0] = rotacionaFace( cubo[0] ) 
-#cubo[0] = rotacionaFace( cubo[0] ) 
-#cubo[0] = rotacionaFace( cubo[0] ) 
-
-
-
 
 
 """
