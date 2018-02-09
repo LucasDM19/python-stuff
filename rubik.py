@@ -33,14 +33,16 @@ class rubikCube:
    """ Calcula a distancia do cubo ate o ponto inicial """
    def obtemHeuristica(self):
       #return [[[ (self.cubo[z][y][x].id - 9*z+3*y+x) **2 for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)] 
-      cont = 0
+      heur = 0
       for z in range(self.MAX_FACES):
          for y in range(self.MAX_LINE):
             for x in range(self.MAX_COLUMN):
-               #print self.cubo[z][y][x].id, ", ", 9*z+3*y+x, ", ", ( self.cubo[z][y][x].id - 9*z+3*y+x)
-               if self.cubo[z][y][x].id != 9*z+3*y+x :
-                  cont += 1
-      return cont
+               #print "id=", self.cubo[z][y][x].id, ", clc=", 9*z+3*y+x, ", dif=", ( self.cubo[z][y][x].id - (9*z+3*y+x)), " # z=", str(z), ", y=", str(y), ", x=", str(x)
+               #if self.cubo[z][y][x].id != 9*z+3*y+x :
+               #   cont += 1
+               heur += ( self.cubo[z][y][x].id - (9*z+3*y+x))**2
+      #print (heur*1.0) ** 0.5
+      return (heur*1.0) ** 0.5
    
    def __str__(self):
       BLANK_LINE = "      "
@@ -209,7 +211,10 @@ class RubikCubeXplorer:
       self.cubo = cubo
    
    """ Obtem uma lista de comandos para serem feitos num cubo """
-   def efetuaMovimentos(self, lista_movimentos ):
+   def efetuaMovimentos(self, lista_movimentos=None, move=None ):
+      if lista_movimentos is None:
+         lista_movimentos = []
+         lista_movimentos.append( move )
       for movimento in lista_movimentos:
          switcher = {
             "F" : self.cubo.rotacionaFrenteHor,
@@ -236,32 +241,38 @@ class RubikCubeXplorer:
       for i in range(repeticoes):
          lista_movimentos.append( switcher[ randrange(self.cubo.MAX_FACES) ] )
       self.efetuaMovimentos( lista_movimentos  )
+
+def exploraArvoreAmpla():      
+   x = RubikCubeXplorer()
+   x.embaralhaCubo(1000)
+   #x.efetuaMovimentos( ["R","U", "R'", "U", "R", "U", "U", "R'", "U" ] ) #R U R' U R U2 R' U
+   ida =   ["F" , "R" , "L" , "U" , "D" , "B" , "F'", "R'", "L'", "U'", "D'", "B'",] 
+   volta = ["F'", "R'", "L'", "U'", "D'", "B'", "F" , "R" , "L" , "U" , "D" , "B" ,]
+   melhor_mov = ""
+   melhor_heu = 10000000
+   melhor_mov_ant = "" #Memoria para nao ficar preso
+   for vezes in range(42):
+      for m in range(len(ida)) :  #Avaliando os movimentos possiveis
+         x.efetuaMovimentos( None, ida[m] )
+         #print ida[m],", ", x.cubo.obtemHeuristica()
+         if x.cubo.obtemHeuristica() < melhor_heu:
+            melhor_heu = x.cubo.obtemHeuristica()
+            melhor_mov = ida[m]
+         x.efetuaMovimentos( None, volta[m] )
+         movs = []
+      if melhor_mov == melhor_mov_ant :
+         #print "Estagnado num pico local. Insanity!"
+         import random
+         melhor_mov = random.choice(ida) #Quando nao se sabe aonde ir, qualquer caminho esta bom
+         melhor_heu = 10000000 #Esquecendo do passado
+      print "#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu
+      melhor_mov_ant = melhor_mov #Para se lembrar
+      x.efetuaMovimentos( None, melhor_mov )
+   print x.cubo
    
-x = RubikCubeXplorer()
-x.embaralhaCubo(1000)
-#x.efetuaMovimentos( ["R","U", "R'", "U", "R", "U", "U", "R'", "U" ] ) #R U R' U R U2 R' U
-ida =   ["F", "R", "L", "U", "D", "B", "F'", "R'", "L'", "U'", "D'", "B'",]
-volta = ["F'", "R'", "L'", "U'", "D'", "B'", "F", "R", "L", "U", "D", "B",]
-movs = []
-melhor_mov = ""
-melhor_heu = 100
-for vezes in range(1000):
-   for m in range(len(ida)) :  #Avaliando os movimentos possiveis
-      movs.append( ida[m] )
-      x.efetuaMovimentos( movs )
-      #print ida[m],", ", x.cubo.obtemHeuristica()
-      if x.cubo.obtemHeuristica() < melhor_heu:
-         melhor_heu = x.cubo.obtemHeuristica()
-         melhor_mov = ida[m]
-      movs = []
-      movs.append( volta[m] )
-      x.efetuaMovimentos( movs )
-      movs = []
-   print "#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu
-   movs.append( melhor_mov )
-   x.efetuaMovimentos( movs )
-   movs = []
-print x.cubo
+#x = RubikCubeXplorer()
+#print x.cubo.obtemHeuristica()
+exploraArvoreAmpla()
 """
 Testar se:
 1) Color instanciada com uma cor continua com aquela cor
