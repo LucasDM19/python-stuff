@@ -1,4 +1,6 @@
-﻿#Classe para as cores do cubo mágico.
+﻿from copy import deepcopy #Usado bastante
+
+#Classe para as cores do cubo mágico.
 #Função clássica é azul, verde, amarelo, branco, vermelho e laranja
 #As cores que estão nas faces opostas do cubo são: amarelo/branco, vermelho/laranja e azul/verde.
 class Color :
@@ -28,6 +30,17 @@ class rubikCube:
                [1, 4, 0, 3, 2], ]
    ACIMA, ABAIXO, DIREITA, ESQUERDA, OPOSTO = range(5)
    
+   """ Calcula a distancia do cubo ate o ponto inicial """
+   def obtemHeuristica(self):
+      #return [[[ (self.cubo[z][y][x].id - 9*z+3*y+x) **2 for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)] 
+      cont = 0
+      for z in range(self.MAX_FACES):
+         for y in range(self.MAX_LINE):
+            for x in range(self.MAX_COLUMN):
+               #print self.cubo[z][y][x].id, ", ", 9*z+3*y+x, ", ", ( self.cubo[z][y][x].id - 9*z+3*y+x)
+               if self.cubo[z][y][x].id != 9*z+3*y+x :
+                  cont += 1
+      return cont
    
    def __str__(self):
       BLANK_LINE = "      "
@@ -45,15 +58,19 @@ class rubikCube:
       line11 = BLANK_LINE + str(self.cubo[4][2][0])+"|"+str(self.cubo[4][2][1])+"|"+str(self.cubo[4][2][2]) + "\n"
       return line1+line2+line3+line4+line5+line6+line7+line8+line9+line10+line11
       
-   """ Rotaciona a frente, em 90 graus, sentido horario """
-   def rotacionaFrenteHor(self,indice=0): #antigo rotacionaFace
-      face = self.cubo[indice]
+   """ Apenas gira uma face """
+   def rotacionaFace(self, face):
       #Tentarei agora rotacionar a tal face
-      from copy import deepcopy
       face2 = deepcopy(face) #aquela Dolly clonada
       for i in range(self.MAX_LINE):
          for j in range(self.MAX_COLUMN):
             face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
+      return face2
+   
+   """ Rotaciona a frente, em 90 graus, sentido horario """
+   def rotacionaFrenteHor(self,indice=0): #antigo rotacionaFace
+      face = self.cubo[indice]
+      face2 = self.rotacionaFace(face) #Rotacionando a face
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
@@ -68,21 +85,16 @@ class rubikCube:
    """ Rotaciona a frente, em 90 graus, sentido anti-horario """
    def rotacionaFrenteAnt(self,indice=0):
       #Na pratica, eu poderia fazer tres rotacoes no sentido horario. Isso daria no mesmo. Seria o equiavelente a fazer uma subtracao binaria usando apenas a soma.
-      self.rotacionaFaceHor(indice)
-      self.rotacionaFaceHor(indice)
-      self.rotacionaFaceHor(indice)
+      self.rotacionaFrenteHor(indice)
+      self.rotacionaFrenteHor(indice)
+      self.rotacionaFrenteHor(indice)
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
    def rotacionaEsqHor(self,indice=0):
       #Na pratica, e equivalente a rotacionar a face esquerda no sentido horario, so que nao
       indice_alt = self.VIZINHOS[indice][self.ESQUERDA] #Pego face que esta na esquerda
       face = self.cubo[indice_alt] #Trabalho apenas com a face esquerda
-      from copy import deepcopy
-      face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(self.MAX_LINE):
-         for j in range(self.MAX_COLUMN):
-            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
-      #self.cubo[indice_alt] = face2 #face retorna
+      face2 = self.rotacionaFace(face) #Rotacionando a face
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
@@ -104,11 +116,8 @@ class rubikCube:
    def rotacionaDirHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.DIREITA] #Pego face que esta na direita
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
-      from copy import deepcopy
-      face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(self.MAX_LINE):
-         for j in range(self.MAX_COLUMN):
-            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
+      face2 = self.rotacionaFace(face) #Rotacionando a face
+      
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(self.MAX_LINE):
@@ -129,11 +138,8 @@ class rubikCube:
    def rotacionaCimaHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.ACIMA] #Pego face que esta acima
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
-      from copy import deepcopy
-      face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(self.MAX_LINE):
-         for j in range(self.MAX_COLUMN):
-            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
+      face2 = self.rotacionaFace(face) #Rotacionando a face
+      
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(self.MAX_LINE):
@@ -154,11 +160,8 @@ class rubikCube:
    def rotacionaBaixoHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.ABAIXO] #Pego face que esta acima
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
-      from copy import deepcopy
-      face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(self.MAX_LINE):
-         for j in range(self.MAX_COLUMN):
-            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
+      face2 = self.rotacionaFace(face) #Rotacionando a face
+      
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
       for i in range(self.MAX_LINE):
@@ -179,11 +182,7 @@ class rubikCube:
    def rotacionaAtrasHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.OPOSTO] #Pego face que esta oposta
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
-      from copy import deepcopy
-      face2 = deepcopy(face) #aquela Dolly clonada
-      for i in range(self.MAX_LINE):
-         for j in range(self.MAX_COLUMN):
-            face2[i][j] = face[self.MAX_LINE-1-j][i] #sim, vira apenas isso
+      face2 = self.rotacionaFace(face) #Rotacionando a face
       
       #Rotacionando os vizinhos
       cubo2 = deepcopy(self.cubo) #aquela Dolly clonada
@@ -219,6 +218,12 @@ class RubikCubeXplorer:
             "U" : self.cubo.rotacionaCimaHor,
             "D" : self.cubo.rotacionaBaixoHor,
             "B" : self.cubo.rotacionaAtrasHor,
+            "F'" : self.cubo.rotacionaFrenteAnt,
+            "R'" : self.cubo.rotacionaDirAnt,
+            "L'" : self.cubo.rotacionaEsqAnt,
+            "U'" : self.cubo.rotacionaCimaAnt,
+            "D'" : self.cubo.rotacionaBaixoAnt,
+            "B'" : self.cubo.rotacionaAtrasAnt,
          }
          func = switcher.get(movimento, "Invalido")
          func()  #Executo a funcao
@@ -233,10 +238,30 @@ class RubikCubeXplorer:
       self.efetuaMovimentos( lista_movimentos  )
    
 x = RubikCubeXplorer()
-#x.efetuaMovimentos( ["F","F","F","F",] )
-x.embaralhaCubo(500)
+x.embaralhaCubo(1000)
+#x.efetuaMovimentos( ["R","U", "R'", "U", "R", "U", "U", "R'", "U" ] ) #R U R' U R U2 R' U
+ida =   ["F", "R", "L", "U", "D", "B", "F'", "R'", "L'", "U'", "D'", "B'",]
+volta = ["F'", "R'", "L'", "U'", "D'", "B'", "F", "R", "L", "U", "D", "B",]
+movs = []
+melhor_mov = ""
+melhor_heu = 100
+for vezes in range(1000):
+   for m in range(len(ida)) :  #Avaliando os movimentos possiveis
+      movs.append( ida[m] )
+      x.efetuaMovimentos( movs )
+      #print ida[m],", ", x.cubo.obtemHeuristica()
+      if x.cubo.obtemHeuristica() < melhor_heu:
+         melhor_heu = x.cubo.obtemHeuristica()
+         melhor_mov = ida[m]
+      movs = []
+      movs.append( volta[m] )
+      x.efetuaMovimentos( movs )
+      movs = []
+   print "#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu
+   movs.append( melhor_mov )
+   x.efetuaMovimentos( movs )
+   movs = []
 print x.cubo
-
 """
 Testar se:
 1) Color instanciada com uma cor continua com aquela cor
