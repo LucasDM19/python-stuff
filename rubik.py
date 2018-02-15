@@ -4,7 +4,7 @@
 #Função clássica é azul, verde, amarelo, branco, vermelho e laranja
 #As cores que estão nas faces opostas do cubo são: amarelo/branco, vermelho/laranja e azul/verde.
 class Color :
-   CoresValidas = range(6)
+   CoresValidas = list(range(6))
    AZUL, VERDE, AMARELO, BRANCO, VERMELHO, LARANJA = CoresValidas
    def __init__(self, value, id):
       if value in self.CoresValidas :
@@ -20,7 +20,6 @@ class rubikCube:
    MAX_FACES = 6
    MAX_LINE = 3
    MAX_COLUMN = 3
-   cubo = [[[Color(z, 9*z+3*y+x) for x in range(MAX_COLUMN)] for y in range(MAX_LINE)] for z in range(MAX_FACES)]
    #Definindo quem e vizinho de quem
    VIZINHOS = [[1, 4, 2, 5, 3],
                [3, 0, 2, 5, 4],
@@ -28,7 +27,10 @@ class rubikCube:
                [1, 4, 5, 2, 0],
                [0, 1, 2, 5, 1],
                [1, 4, 0, 3, 2], ]
-   ACIMA, ABAIXO, DIREITA, ESQUERDA, OPOSTO = range(5)
+   ACIMA, ABAIXO, DIREITA, ESQUERDA, OPOSTO = list(range(5))
+   
+   def __init__(self):
+      self.cubo = [[[Color(z, 9*z+3*y+x) for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)]
    
    """ Calcula a distancia do cubo ate o ponto inicial """
    def obtemHeuristica(self):
@@ -37,10 +39,8 @@ class rubikCube:
       for z in range(self.MAX_FACES):
          for y in range(self.MAX_LINE):
             for x in range(self.MAX_COLUMN):
-               #print "id=", self.cubo[z][y][x].id, ", clc=", 9*z+3*y+x, ", dif=", ( self.cubo[z][y][x].id - (9*z+3*y+x)), " # z=", str(z), ", y=", str(y), ", x=", str(x)
-               #if self.cubo[z][y][x].id != 9*z+3*y+x :
-               #   cont += 1
-               heur += ( self.cubo[z][y][x].id - (9*z+3*y+x))**2
+               #heur += ( self.cubo[z][y][x].id - (9*z+3*y+x))**2
+               heur += ( self.cubo[z][y][x].value - (z))**2
       #print (heur*1.0) ** 0.5
       return (heur*1.0) ** 0.5
    
@@ -265,10 +265,10 @@ def exploraArvoreAmpla():
          import random
          melhor_mov = random.choice(ida) #Quando nao se sabe aonde ir, qualquer caminho esta bom
          melhor_heu = 10000000 #Esquecendo do passado
-      print "#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu
+      print("#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu)
       melhor_mov_ant = melhor_mov #Para se lembrar
       x.efetuaMovimentos( None, melhor_mov )
-   print x.cubo
+   print((x.cubo))
    
 #x = RubikCubeXplorer()
 #print x.cubo.obtemHeuristica()

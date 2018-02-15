@@ -4,6 +4,9 @@
 
 *.py[cod]
 
+# Conversion - 2to3
+*.py.bak
+
 # Packages
 *.egg
 *.egg-info
