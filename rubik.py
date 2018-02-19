@@ -211,27 +211,34 @@ class RubikCubeXplorer:
       self.cubo = cubo
    
    """ Obtem uma lista de comandos para serem feitos num cubo """
-   def efetuaMovimentos(self, lista_movimentos=None, move=None ):
+   def efetuaMovimentos(self, lista_movimentos=None, move=None, simulaCubo=False ):
       if lista_movimentos is None:
          lista_movimentos = []
          lista_movimentos.append( move )
+      if simulaCubo :
+         cubo2 = deepcopy(self.cubo) #Clono o cubo
+      else: 
+         cubo2 = self.cubo #Mantenho cubo original
       for movimento in lista_movimentos:
          switcher = {
-            "F" : self.cubo.rotacionaFrenteHor,
-            "R" : self.cubo.rotacionaDirHor,
-            "L" : self.cubo.rotacionaEsqHor,
-            "U" : self.cubo.rotacionaCimaHor,
-            "D" : self.cubo.rotacionaBaixoHor,
-            "B" : self.cubo.rotacionaAtrasHor,
-            "F'" : self.cubo.rotacionaFrenteAnt,
-            "R'" : self.cubo.rotacionaDirAnt,
-            "L'" : self.cubo.rotacionaEsqAnt,
-            "U'" : self.cubo.rotacionaCimaAnt,
-            "D'" : self.cubo.rotacionaBaixoAnt,
-            "B'" : self.cubo.rotacionaAtrasAnt,
+            #"F" : self.cubo.rotacionaFrenteHor,
+            "F" : cubo2.rotacionaFrenteHor,
+            "R" : cubo2.rotacionaDirHor,
+            "L" : cubo2.rotacionaEsqHor,
+            "U" : cubo2.rotacionaCimaHor,
+            "D" : cubo2.rotacionaBaixoHor,
+            "B" : cubo2.rotacionaAtrasHor,
+            "F'" : cubo2.rotacionaFrenteAnt,
+            "R'" : cubo2.rotacionaDirAnt,
+            "L'" : cubo2.rotacionaEsqAnt,
+            "U'" : cubo2.rotacionaCimaAnt,
+            "D'" : cubo2.rotacionaBaixoAnt,
+            "B'" : cubo2.rotacionaAtrasAnt,
          }
          func = switcher.get(movimento, "Invalido")
          func()  #Executo a funcao
+      if simulaCubo :
+         return cubo2
       
    """ Obtem um cubo magico e efetua movimentos aleatorios """
    def embaralhaCubo(self, repeticoes=50):
@@ -270,9 +277,36 @@ def exploraArvoreAmpla():
       x.efetuaMovimentos( None, melhor_mov )
    print((x.cubo))
    
+def exploraArvoreProfunda():
+   x = RubikCubeXplorer()
+   #x.efetuaMovimentos( ["U", ] )
+   #print ( "1mov=", x.cubo.obtemHeuristica() )
+   x.embaralhaCubo(1000)
+   print((x.cubo))
+   print ("Heuristica inicial:", x.cubo.obtemHeuristica() )
+   #prof_ramo=25  #Profundidade maxima a ser buscada
+   switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
+   from random import randrange
+   melhor_movs = []
+   melhor_heu = x.cubo.obtemHeuristica()
+   melhor_mov_ant = "" #Memoria para nao ficar preso
+   cont = 0
+   for vezes in range(4200000):
+      prof_ramo = randrange(25) #Profundidade aleatoria
+      movimento = [switcher[ randrange(x.cubo.MAX_FACES) ] for i in range(prof_ramo)]  #Lista aleatoria candidata
+      c2 = x.efetuaMovimentos( movimento, None, simulaCubo=True  )
+      if c2.obtemHeuristica() < melhor_heu:
+         melhor_heu = c2.obtemHeuristica()
+         melhor_movs = movimento  #Por enquanto apenas isso
+         print ( "Etapa #", cont, ", heur=", c2.obtemHeuristica(), ", movs=", movimento )
+      cont += 1
+   x.efetuaMovimentos( movimento, None  ) #A melhor opcao fica sendo a atual
+   print((x.cubo))
+   
 #x = RubikCubeXplorer()
 #print x.cubo.obtemHeuristica()
-exploraArvoreAmpla()
+#exploraArvoreAmpla()
+exploraArvoreProfunda()
 """
 Testar se:
 1) Color instanciada com uma cor continua com aquela cor
