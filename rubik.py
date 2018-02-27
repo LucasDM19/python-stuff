@@ -14,7 +14,7 @@ class Color :
    def getValue(self):
       return self.value
    def __str__(self):
-      return str(self.value) #return str( self.id )
+      return str(self.id) #return str( self.value )
 
 class rubikCube:
    MAX_FACES = 6
@@ -39,10 +39,21 @@ class rubikCube:
       for z in range(self.MAX_FACES):
          for y in range(self.MAX_LINE):
             for x in range(self.MAX_COLUMN):
-               #heur += ( self.cubo[z][y][x].id - (9*z+3*y+x))**2
-               heur += ( self.cubo[z][y][x].value - (z))**2
+               heur += ( self.cubo[z][y][x].id - (9*z+3*y+x))**2
+               #heur += ( self.cubo[z][y][x].value - (z))**2
       #print (heur*1.0) ** 0.5
       return (heur*1.0) ** 0.5
+      
+   """ Tentarei Heuristica apenas dos cantos """
+   def obtemHeuristicaCanto(self):
+      heur = 8
+      for z in [0, 3]:
+         if self.cubo[z][0][0].id == (9*z+0) : heur -= 1
+         if self.cubo[z][0][2].id == (9*z+2) : heur -= 1
+         if self.cubo[z][2][0].id == (9*z+6) : heur -= 1
+         if self.cubo[z][2][2].id == (9*z+8) : heur -= 1
+      #print (heur)
+      return heur
    
    def __str__(self):
       BLANK_LINE = "      "
@@ -90,6 +101,11 @@ class rubikCube:
       self.rotacionaFrenteHor(indice)
       self.rotacionaFrenteHor(indice)
       self.rotacionaFrenteHor(indice)
+      
+   """ Rotaciona a frente, em 90 graus, sentido horario, duas vezes """
+   def rotacionaFrenteDup(self, indice=0):
+      self.rotacionaFrenteHor(indice)
+      self.rotacionaFrenteHor(indice)
    
    """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
    def rotacionaEsqHor(self,indice=0):
@@ -114,7 +130,12 @@ class rubikCube:
       self.rotacionaEsqHor(indice)
       self.rotacionaEsqHor(indice)
    
-   """ Rotaciona a face esquerda, de cima para baixo, sentido horario """
+   """ Rotaciona a face esquerda, de cima para baixo, sentido horario, duas vezes """
+   def rotacionaEsqDup(self,indice=0):
+      self.rotacionaEsqHor(indice)
+      self.rotacionaEsqHor(indice)
+   
+   """ Rotaciona a face direita, de cima para baixo, sentido horario """
    def rotacionaDirHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.DIREITA] #Pego face que esta na direita
       face = self.cubo[indice_alt] #Trabalho apenas com a face direita
@@ -130,9 +151,14 @@ class rubikCube:
       self.cubo = cubo2 #desclonou
       self.cubo[indice_alt] = face2 #face retorna, mas apenas agora
    
-   """ Rotaciona a face esquerda, de cima para baixo, sentido anti-horario """
+   """ Rotaciona a face direita, de cima para baixo, sentido anti-horario """
    def rotacionaDirAnt(self,indice=0):
       self.rotacionaDirHor(indice)
+      self.rotacionaDirHor(indice)
+      self.rotacionaDirHor(indice)
+      
+   """ Rotaciona a face direita, de cima para baixo, sentido horario, duas vezes """
+   def rotacionaDirDup(self,indice=0):
       self.rotacionaDirHor(indice)
       self.rotacionaDirHor(indice)
    
@@ -158,6 +184,11 @@ class rubikCube:
       self.rotacionaCimaHor(indice)
       self.rotacionaCimaHor(indice)
    
+   """ Rotaciona a face de cima, sentido horario, duas vezes """
+   def rotacionaCimaDup(self,indice=0):
+      self.rotacionaCimaHor(indice)
+      self.rotacionaCimaHor(indice)
+   
    """ Rotaciona a face de baixo, sentido horario """
    def rotacionaBaixoHor(self,indice=0):
       indice_alt = self.VIZINHOS[indice][self.ABAIXO] #Pego face que esta acima
@@ -177,6 +208,11 @@ class rubikCube:
    """ Rotaciona a face de baixo, sentido anti-horario """
    def rotacionaBaixoAnt(self,indice=0):
       self.rotacionaBaixoHor(indice)
+      self.rotacionaBaixoHor(indice)
+      self.rotacionaBaixoHor(indice)
+   
+   """ Rotaciona a face de baixo, sentido horario, duas vezes """
+   def rotacionaBaixoDup(self,indice=0):
       self.rotacionaBaixoHor(indice)
       self.rotacionaBaixoHor(indice)
    
@@ -202,6 +238,10 @@ class rubikCube:
       self.rotacionaAtrasHor(indice)
       self.rotacionaAtrasHor(indice)
    
+   """ Rotaciona atras, sentido horario, duas vezes """
+   def rotacionaAtrasDup(self,indice=0):
+      self.rotacionaAtrasHor(indice)
+      self.rotacionaAtrasHor(indice)
 
 class RubikCubeXplorer:
    cubo = None
@@ -221,13 +261,18 @@ class RubikCubeXplorer:
          cubo2 = self.cubo #Mantenho cubo original
       for movimento in lista_movimentos:
          switcher = {
-            #"F" : self.cubo.rotacionaFrenteHor,
             "F" : cubo2.rotacionaFrenteHor,
             "R" : cubo2.rotacionaDirHor,
             "L" : cubo2.rotacionaEsqHor,
             "U" : cubo2.rotacionaCimaHor,
             "D" : cubo2.rotacionaBaixoHor,
             "B" : cubo2.rotacionaAtrasHor,
+            "L2" : cubo2.rotacionaEsqDup,
+            "R2" : cubo2.rotacionaDirDup,
+            "F2" : cubo2.rotacionaFrenteDup,
+            "B2" : cubo2.rotacionaAtrasDup,
+            "U2" : cubo2.rotacionaCimaDup,
+            "D2" : cubo2.rotacionaBaixoDup,
             "F'" : cubo2.rotacionaFrenteAnt,
             "R'" : cubo2.rotacionaDirAnt,
             "L'" : cubo2.rotacionaEsqAnt,
@@ -251,62 +296,64 @@ class RubikCubeXplorer:
 
 def exploraArvoreAmpla():      
    x = RubikCubeXplorer()
-   x.embaralhaCubo(1000)
+   x.embaralhaCubo(4)
    #x.efetuaMovimentos( ["R","U", "R'", "U", "R", "U", "U", "R'", "U" ] ) #R U R' U R U2 R' U
-   ida =   ["F" , "R" , "L" , "U" , "D" , "B" , "F'", "R'", "L'", "U'", "D'", "B'",] 
-   volta = ["F'", "R'", "L'", "U'", "D'", "B'", "F" , "R" , "L" , "U" , "D" , "B" ,]
+   operacoes_g0 =   ["F" , "R" , "L" , "U" , "D" , "B" ]
    melhor_mov = ""
-   melhor_heu = 10000000
-   melhor_mov_ant = "" #Memoria para nao ficar preso
-   for vezes in range(42):
-      for m in range(len(ida)) :  #Avaliando os movimentos possiveis
-         x.efetuaMovimentos( None, ida[m] )
-         #print ida[m],", ", x.cubo.obtemHeuristica()
-         if x.cubo.obtemHeuristica() < melhor_heu:
-            melhor_heu = x.cubo.obtemHeuristica()
-            melhor_mov = ida[m]
-         x.efetuaMovimentos( None, volta[m] )
-         movs = []
-      if melhor_mov == melhor_mov_ant :
-         #print "Estagnado num pico local. Insanity!"
-         import random
-         melhor_mov = random.choice(ida) #Quando nao se sabe aonde ir, qualquer caminho esta bom
-         melhor_heu = 10000000 #Esquecendo do passado
-      print("#", vezes, "Mov=", melhor_mov, ", H=", melhor_heu)
-      melhor_mov_ant = melhor_mov #Para se lembrar
-      x.efetuaMovimentos( None, melhor_mov )
+   melhor_heu = x.cubo.obtemHeuristica()
+   print("Inicio. H=", melhor_heu)
+   contador=0
+   max_profun = 6  #Ate onde a arvore ira
+   for ram in range(1,max_profun+1): #Como uma espiral, varre a arvore, item a item.
+      import itertools
+      lista_movs = list(itertools.product(operacoes_g0, repeat=ram))  #lista de opcoes possiveis. FFF, FFB, ... , BBD, BBB
+      for mov in lista_movs:
+         contador +=1
+         c2 = x.efetuaMovimentos(mov, None, simulaCubo=True)
+         if c2.obtemHeuristica() < melhor_heu:
+            melhor_heu = c2.obtemHeuristica()
+            melhor_mov = mov
+            print("#", contador, "Ram=", ram, "Mov=", melhor_mov, ", H=", melhor_heu)
+   x.efetuaMovimentos(melhor_mov, None, simulaCubo=False) #Aplico o melhor movimento
    print((x.cubo))
    
 def exploraArvoreProfunda():
    x = RubikCubeXplorer()
    #x.efetuaMovimentos( ["U", ] )
    #print ( "1mov=", x.cubo.obtemHeuristica() )
-   x.embaralhaCubo(1000)
    print((x.cubo))
-   print ("Heuristica inicial:", x.cubo.obtemHeuristica() )
+   x.embaralhaCubo(10)
+   print((x.cubo))
+   print ("Heuristica inicial:", x.cubo.obtemHeuristicaCanto() )
    #prof_ramo=25  #Profundidade maxima a ser buscada
    switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
    from random import randrange
    melhor_movs = []
-   melhor_heu = x.cubo.obtemHeuristica()
+   melhor_heu = x.cubo.obtemHeuristicaCanto()
    melhor_mov_ant = "" #Memoria para nao ficar preso
    cont = 0
-   for vezes in range(4200000):
-      prof_ramo = randrange(25) #Profundidade aleatoria
+   for vezes in range(2000):
+      prof_ramo = randrange(42) #Profundidade aleatoria
       movimento = [switcher[ randrange(x.cubo.MAX_FACES) ] for i in range(prof_ramo)]  #Lista aleatoria candidata
       c2 = x.efetuaMovimentos( movimento, None, simulaCubo=True  )
-      if c2.obtemHeuristica() < melhor_heu:
-         melhor_heu = c2.obtemHeuristica()
+      if c2.obtemHeuristicaCanto() < melhor_heu:
+         melhor_heu = c2.obtemHeuristicaCanto()
          melhor_movs = movimento  #Por enquanto apenas isso
-         print ( "Etapa #", cont, ", heur=", c2.obtemHeuristica(), ", movs=", movimento )
+         print ( "Etapa #", cont, ", heur=", c2.obtemHeuristicaCanto(), ", movs=", movimento )
       cont += 1
-   x.efetuaMovimentos( movimento, None  ) #A melhor opcao fica sendo a atual
+   x.efetuaMovimentos( melhor_movs, None  ) #A melhor opcao fica sendo a atual
    print((x.cubo))
    
 #x = RubikCubeXplorer()
 #print x.cubo.obtemHeuristica()
-#exploraArvoreAmpla()
-exploraArvoreProfunda()
+exploraArvoreAmpla()
+#exploraArvoreProfunda()
+#x = RubikCubeXplorer()
+#x.cubo.obtemHeuristicaCanto()
+#x.efetuaMovimentos(None, "L")
+#x.embaralhaCubo(10)
+#x.cubo.obtemHeuristicaCanto()
+
 """
 Testar se:
 1) Color instanciada com uma cor continua com aquela cor
