@@ -349,11 +349,11 @@ def exploraArvoreProfunda():
    x.efetuaMovimentos( melhor_movs, None  ) #A melhor opcao fica sendo a atual
    print((x.cubo))
 
-def geraCubosG1():
+def geraCubosGn(movimentos):
    matriz_total = [[0 for x in range(54)] for y in range(54)] #Contarei as ocorrencias de cada tipo
-   for qtd in range(100):
+   for qtd in range(2000):
       xp = RubikCubeXplorer()
-      xp.embaralhaCubo(repeticoes=10, switcher={0 : "F",  1 : "R", 2 : "L", 3 : "U2", 4 : "D2", 5 : "B", } )
+      xp.embaralhaCubo(repeticoes=20, switcher=movimentos )
       for z in range(xp.cubo.MAX_FACES):
             for y in range(xp.cubo.MAX_LINE):
                for x in range(xp.cubo.MAX_COLUMN):
@@ -374,6 +374,12 @@ def geraCubosG1():
         
    #for i in range(54):
       #print(",".join(str(matriz_total[i][j]) for j in range(54)))
+   for id in range(54):
+      print( "Coor=", traduzIndiceCoordenada(id) )
+      for valor in range(54):
+         if( (defineCantoMeioCentro(traduzIndiceCoordenada(id)) != "k") 
+         and (defineCantoMeioCentro(traduzIndiceCoordenada(id)) == defineCantoMeioCentro(traduzIndiceCoordenada(valor))) ): #Valores especificos
+            print("linha=", traduzIndiceCoordenada(valor), "->", matriz_total[id][valor], "(", 100.0*matriz_total[id][valor]/2000, "%)" )
    dic_ids = {} #Dicionario de movimentos a serem buscados
    for id in range(54):
       for valor in range(54):
@@ -381,17 +387,25 @@ def geraCubosG1():
          and (defineCantoMeioCentro(traduzIndiceCoordenada(id)) == defineCantoMeioCentro(traduzIndiceCoordenada(valor)))
          and ( matriz_total[id][valor] == 0) ): #Valores especificos
             #print("ID=", id, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(id)), ",Valor=", valor, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(valor)) )
-            if traduzIndiceCoordenada(id) not in dic_ids:
-               dic_ids[traduzIndiceCoordenada(id)] = []
-            else:
-               dic_ids[traduzIndiceCoordenada(id)].append( traduzIndiceCoordenada(valor) )
+            if traduzIndiceCoordenada(id) not in dic_ids: dic_ids[traduzIndiceCoordenada(id)] = []
+            dic_ids[traduzIndiceCoordenada(id)].append( traduzIndiceCoordenada(valor) )
+   dic_faces = {} #Contabilizar por tipo de coordenada (linha, coluna)
    for id in dic_ids:
-      print( "ID=", id, ", ", dic_ids[id] )
+      print( "ID=", id, ", len=", len(dic_ids[id]), "->", dic_ids[id] )
+      for p in dic_ids[id]:
+         if( (p[1], p[2] ) not in dic_faces ): dic_faces[(p[1], p[2] )] = 0
+         dic_faces[(p[1], p[2] )] += 1
+   
+   for face in dic_faces:
+      print( "Face=", face, ", total=", dic_faces[face] )
 #x = RubikCubeXplorer()
 #print (x.cubo)
 #exploraArvoreAmpla( rubikCube().obtemHeuristica )
 #exploraArvoreProfunda()
-geraCubosG1()
+#geraCubosGn(movimentos={0 : "F",   1 : "R",  2 : "L",  3 : "U",  4 : "D",  5 : "B", }) #Movimentos para G0
+geraCubosGn(movimentos={0 : "F",   1 : "R",  2 : "L",  3 : "U2", 4 : "D2", 5 : "B", }) #Movimentos para G1
+#geraCubosGn(movimentos={0 : "F2",  1 : "R",  2 : "L",  3 : "U2", 4 : "D2", 5 : "B2", }) #Movimentos para G2
+#geraCubosGn(movimentos={0 : "F2",  1 : "R2", 2 : "L2", 3 : "U2", 4 : "D2", 5 : "B2", }) #Movimentos para G3
 #x = RubikCubeXplorer()
 #x.cubo.obtemHeuristicaCanto()
 #x.efetuaMovimentos(None, "L")
