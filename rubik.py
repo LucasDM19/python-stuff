@@ -32,6 +32,10 @@ class rubikCube:
    def __init__(self):
       self.cubo = [[[Color(z, 9*z+3*y+x) for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)]
    
+   """ Determina se o cubo pertence ao grupo G1 (retorna 0) ou nao (retorna 1) """
+   #def obtemHeuristicaG0(self):
+      
+   
    """ Calcula a distancia do cubo ate o ponto inicial """
    def obtemHeuristica(self):
       #return [[[ (self.cubo[z][y][x].id - 9*z+3*y+x) **2 for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)] 
@@ -286,24 +290,25 @@ class RubikCubeXplorer:
          return cubo2
       
    """ Obtem um cubo magico e efetua movimentos aleatorios """
-   def embaralhaCubo(self, repeticoes=50):
+   def embaralhaCubo(self, repeticoes=50, switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", } ):
       from random import randrange
       lista_movimentos = []
-      switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
+      #switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
       for i in range(repeticoes):
          lista_movimentos.append( switcher[ randrange(self.cubo.MAX_FACES) ] )
       self.efetuaMovimentos( lista_movimentos  )
 
-def exploraArvoreAmpla():      
+def exploraArvoreAmpla( func_heuristica ):      
    x = RubikCubeXplorer()
-   x.embaralhaCubo(4)
+   print((x.cubo))
+   x.embaralhaCubo(1)
    #x.efetuaMovimentos( ["R","U", "R'", "U", "R", "U", "U", "R'", "U" ] ) #R U R' U R U2 R' U
    operacoes_g0 =   ["F" , "R" , "L" , "U" , "D" , "B" ]
    melhor_mov = ""
    melhor_heu = x.cubo.obtemHeuristica()
    print("Inicio. H=", melhor_heu)
    contador=0
-   max_profun = 6  #Ate onde a arvore ira
+   max_profun = 4  #Ate onde a arvore ira
    for ram in range(1,max_profun+1): #Como uma espiral, varre a arvore, item a item.
       import itertools
       lista_movs = list(itertools.product(operacoes_g0, repeat=ram))  #lista de opcoes possiveis. FFF, FFB, ... , BBD, BBB
@@ -343,11 +348,50 @@ def exploraArvoreProfunda():
       cont += 1
    x.efetuaMovimentos( melhor_movs, None  ) #A melhor opcao fica sendo a atual
    print((x.cubo))
-   
+
+def geraCubosG1():
+   matriz_total = [[0 for x in range(54)] for y in range(54)] #Contarei as ocorrencias de cada tipo
+   for qtd in range(100):
+      xp = RubikCubeXplorer()
+      xp.embaralhaCubo(repeticoes=10, switcher={0 : "F",  1 : "R", 2 : "L", 3 : "U2", 4 : "D2", 5 : "B", } )
+      for z in range(xp.cubo.MAX_FACES):
+            for y in range(xp.cubo.MAX_LINE):
+               for x in range(xp.cubo.MAX_COLUMN):
+                  matriz_total[(9*z+3*y+x)][ xp.cubo.cubo[z][y][x].id ] += 1
+      #if( qtd % 100 == 0 ):
+      #   print( "#", str(qtd) )
+      
+   #Para facilitar. Recebo um numero entre 0 e 53. Retorno (f, l, c), com face entre 0 e 5, linha e coluna entre 0 e 2.
+   def traduzIndiceCoordenada(indice):
+      return ( int(indice/9), int(indice/3) % 3, indice % 3 )
+      
+   #Recebe uma coordenada (face, linha, coluna), e informa se eh do tipo canto ('c'), meio('m') ou centro('k') da face.
+   def defineCantoMeioCentro(coordenada):
+      if( coordenada[1] == int(xp.cubo.MAX_LINE/2) ) and ( coordenada[2] == int(xp.cubo.MAX_COLUMN/2) ) : return "k"  #Coordenadas f,1,1
+      if( (coordenada[1]+coordenada[2]) % 2 == 0 ) : return "c"  #Coordenadas f,0,0 f,2,2 f,0,2 e f,2,0
+      if( (coordenada[1]+coordenada[2]) % 2 == 1 ) : return "m"  #Coordenadas f,0,1 f,1,0 f,1,2 e f,2,1
+      return "?" #Apenas para eviar um erro
+        
+   #for i in range(54):
+      #print(",".join(str(matriz_total[i][j]) for j in range(54)))
+   dic_ids = {} #Dicionario de movimentos a serem buscados
+   for id in range(54):
+      for valor in range(54):
+         if( (defineCantoMeioCentro(traduzIndiceCoordenada(id)) != "k") 
+         and (defineCantoMeioCentro(traduzIndiceCoordenada(id)) == defineCantoMeioCentro(traduzIndiceCoordenada(valor)))
+         and ( matriz_total[id][valor] == 0) ): #Valores especificos
+            #print("ID=", id, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(id)), ",Valor=", valor, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(valor)) )
+            if traduzIndiceCoordenada(id) not in dic_ids:
+               dic_ids[traduzIndiceCoordenada(id)] = []
+            else:
+               dic_ids[traduzIndiceCoordenada(id)].append( traduzIndiceCoordenada(valor) )
+   for id in dic_ids:
+      print( "ID=", id, ", ", dic_ids[id] )
 #x = RubikCubeXplorer()
-#print x.cubo.obtemHeuristica()
-exploraArvoreAmpla()
+#print (x.cubo)
+#exploraArvoreAmpla( rubikCube().obtemHeuristica )
 #exploraArvoreProfunda()
+geraCubosG1()
 #x = RubikCubeXplorer()
 #x.cubo.obtemHeuristicaCanto()
 #x.efetuaMovimentos(None, "L")
