@@ -33,8 +33,43 @@ class rubikCube:
       self.cubo = [[[Color(z, 9*z+3*y+x) for x in range(self.MAX_COLUMN)] for y in range(self.MAX_LINE)] for z in range(self.MAX_FACES)]
    
    """ Determina se o cubo pertence ao grupo G1 (retorna 0) ou nao (retorna 1) """
-   #def obtemHeuristicaG0(self):
+   def obtemHeuristicaG1(self):
+      coords_proibidas = {
+         (0, 0, 1) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (0, 1, 0) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (0, 1, 2) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (0, 2, 1) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (1, 0, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (1, 1, 0) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (1, 1, 2) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (1, 2, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (2, 0, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (2, 1, 0) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (2, 1, 2) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (2, 2, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (3, 0, 1) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (3, 1, 0) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (3, 1, 2) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (3, 2, 1) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (4, 0, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (4, 1, 0) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (4, 1, 2) : [(1, 0, 1), (1, 2, 1), (2, 0, 1), (2, 1, 0), (2, 1, 2), (2, 2, 1), (4, 0, 1), (4, 2, 1), (5, 0, 1), (5, 1, 0), (5, 1, 2), (5, 2, 1)],
+         (4, 2, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (5, 0, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (5, 1, 0) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (5, 1, 2) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+         (5, 2, 1) : [(0, 0, 1), (0, 1, 0), (0, 1, 2), (0, 2, 1), (1, 1, 0), (1, 1, 2), (3, 0, 1), (3, 1, 0), (3, 1, 2), (3, 2, 1), (4, 1, 0), (4, 1, 2)],
+      } # Os lugares aonde as peças não estarão
       
+      for z in range(self.MAX_FACES):
+         for y in range(self.MAX_LINE):
+            for x in range(self.MAX_COLUMN):
+               #print( "ID=", traduzIndiceCoordenada( self.cubo[z][y][x].id ), " está em: ", traduzIndiceCoordenada( (9*z+3*y+x) )  ) 
+               if traduzIndiceCoordenada( self.cubo[z][y][x].id ) in coords_proibidas:
+                  if traduzIndiceCoordenada( (9*z+3*y+x) ) in coords_proibidas[traduzIndiceCoordenada( self.cubo[z][y][x].id )] :
+                     #print("Proibidão!!!", coords_proibidas[traduzIndiceCoordenada( self.cubo[z][y][x].id )] )
+                     return (9*z+3*y+x)  #Retorno o ID incorreto
+      return -1 #Indica que o cubo está no grupo G1
    
    """ Calcula a distancia do cubo ate o ponto inicial """
    def obtemHeuristica(self):
@@ -331,15 +366,16 @@ def exploraArvoreProfunda():
    print((x.cubo))
    print ("Heuristica inicial:", x.cubo.obtemHeuristicaCanto() )
    #prof_ramo=25  #Profundidade maxima a ser buscada
-   switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
-   from random import randrange
+   #switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
+   #from random import randrange
    melhor_movs = []
    melhor_heu = x.cubo.obtemHeuristicaCanto()
    melhor_mov_ant = "" #Memoria para nao ficar preso
    cont = 0
    for vezes in range(2000):
       prof_ramo = randrange(42) #Profundidade aleatoria
-      movimento = [switcher[ randrange(x.cubo.MAX_FACES) ] for i in range(prof_ramo)]  #Lista aleatoria candidata
+      #movimento = [switcher[ randrange(x.cubo.MAX_FACES) ] for i in range(prof_ramo)]  #Lista aleatoria candidata
+      movimento = obtemMovimentosAleatorios(switcher={0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }, qtd_movs=prof_ramo)
       c2 = x.efetuaMovimentos( movimento, None, simulaCubo=True  )
       if c2.obtemHeuristicaCanto() < melhor_heu:
          melhor_heu = c2.obtemHeuristicaCanto()
@@ -349,6 +385,15 @@ def exploraArvoreProfunda():
    x.efetuaMovimentos( melhor_movs, None  ) #A melhor opcao fica sendo a atual
    print((x.cubo))
 
+#Para facilitar. Recebo um numero entre 0 e 53. Retorno (f, l, c), com face entre 0 e 5, linha e coluna entre 0 e 2.
+def traduzIndiceCoordenada(indice):
+   return ( int(indice/9), int(indice/3) % 3, indice % 3 )
+
+def obtemMovimentosAleatorios(switcher={0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }, qtd_movs=1):
+   from random import randrange
+   movimento = [switcher[ randrange(len(switcher)) ] for i in range(qtd_movs)]
+   return movimento
+   
 def geraCubosGn(movimentos):
    matriz_total = [[0 for x in range(54)] for y in range(54)] #Contarei as ocorrencias de cada tipo
    for qtd in range(2000):
@@ -360,11 +405,7 @@ def geraCubosGn(movimentos):
                   matriz_total[(9*z+3*y+x)][ xp.cubo.cubo[z][y][x].id ] += 1
       #if( qtd % 100 == 0 ):
       #   print( "#", str(qtd) )
-      
-   #Para facilitar. Recebo um numero entre 0 e 53. Retorno (f, l, c), com face entre 0 e 5, linha e coluna entre 0 e 2.
-   def traduzIndiceCoordenada(indice):
-      return ( int(indice/9), int(indice/3) % 3, indice % 3 )
-      
+
    #Recebe uma coordenada (face, linha, coluna), e informa se eh do tipo canto ('c'), meio('m') ou centro('k') da face.
    def defineCantoMeioCentro(coordenada):
       if( coordenada[1] == int(xp.cubo.MAX_LINE/2) ) and ( coordenada[2] == int(xp.cubo.MAX_COLUMN/2) ) : return "k"  #Coordenadas f,1,1
@@ -389,25 +430,96 @@ def geraCubosGn(movimentos):
             #print("ID=", id, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(id)), ",Valor=", valor, ", ", defineCantoMeioCentro(traduzIndiceCoordenada(valor)) )
             if traduzIndiceCoordenada(id) not in dic_ids: dic_ids[traduzIndiceCoordenada(id)] = []
             dic_ids[traduzIndiceCoordenada(id)].append( traduzIndiceCoordenada(valor) )
-   dic_faces = {} #Contabilizar por tipo de coordenada (linha, coluna)
+   # dic_faces = {} #Contabilizar por tipo de coordenada (linha, coluna)
    for id in dic_ids:
       print( "ID=", id, ", len=", len(dic_ids[id]), "->", dic_ids[id] )
-      for p in dic_ids[id]:
-         if( (p[1], p[2] ) not in dic_faces ): dic_faces[(p[1], p[2] )] = 0
-         dic_faces[(p[1], p[2] )] += 1
+      # for p in dic_ids[id]:
+         # #if( (p[1], p[2] ) not in dic_faces ): dic_faces[(p[1], p[2] )] = 0
+         # if( p[0] not in dic_faces ): dic_faces[p[0]] = []
+         # #dic_faces[(p[1], p[2] )] += 1
+         # dic_faces[p[0]].append( (p[1], p[2]) )
    
-   for face in dic_faces:
-      print( "Face=", face, ", total=", dic_faces[face] )
+   # for face in dic_faces:
+      # print( "Face=", face, ", total=", dic_faces[face] )
+
+""" Função que tenta descobrir quais movimentos são mais efetivos, ao fazer a passagem entre G0 e G1 """
+def geraMovimentosG1():
+   dic_heur = {} #Heuristicas
+   for geracoes in range(100000):  #Aleatoriedade
+      x = RubikCubeXplorer()
+      x.embaralhaCubo(15)
+      heur_ant = x.cubo.obtemHeuristicaG1()
+      #print("Ant=", heur_ant)
+      for qtd in range(10): #Apenas uma vez?
+         #x.embaralhaCubo(15) #Começo do zero, sempre
+         movimento = obtemMovimentosAleatorios(switcher={0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", 
+                                                         6 : "F2",  7 : "R2", 8 : "L2", 9 : "U2", 10 : "D2", 11 : "B2",
+                                                         12 : "F'",  13 : "R'", 14 : "L'", 15 : "U'", 16 : "D'", 17 : "B'", }, qtd_movs=1)
+         #print("Movimento=", movimento[0] )
+         x.efetuaMovimentos(movimento)
+         #print( x.cubo.obtemHeuristicaG1() )
+         if (heur_ant < x.cubo.obtemHeuristicaG1()) and (heur_ant != -1) :  #A heuristica tem de melhorar
+            #print( "Movimento=", movimento[0], " com heur=", heur_ant ," é bom!")  
+            #Caso tenha sucesso, eu registro
+            if heur_ant not in dic_heur:
+               dic_heur[heur_ant] = {}
+            if movimento[0] not in dic_heur[heur_ant] :
+               dic_heur[heur_ant][movimento[0]] = 0 
+            dic_heur[heur_ant][movimento[0]] += 1 #Contabilizo esse movimento, com a heurística
+            heur_ant = x.cubo.obtemHeuristicaG1()  #Atualiza
+         #else: print("RUIM!!!!")
+   from collections  import OrderedDict
+   sorted_dic_heur = {}
+   for h in dic_heur:
+      sorted_x = OrderedDict(sorted(dic_heur[h].items(), key=lambda x: x[1]))
+      #print(sorted_x)
+      dic_heur[h] = sorted_x
+   for h in dic_heur:
+      print ("Heur=", h, "Movs=",dic_heur[h] )
+      
+def exploraAteG1():
+   dic_movimentos={
+      1: ("F", "F2", "F'", "U", "U2", "U'", "D", "D2", "D'", "B", "B2", "B'", "R", "R2", "R'"),
+      5: ("R", "R2", "R'", "F", "F2", "F'", "L", "L2", "L'"),
+      3: ("L", "L2", "L'", "F", "F2", "F'", "U", "U2", "U'", "D", "D2", "D'"),
+      10: ("B", "B2", "B'", "U", "U2", "U'"),
+      7: ("D", "D2", "D'", "L", "L2", "L'" "R", "R2", "R'"),
+      12: ("U", "U2", "U'", "L", "L2", "L'"),
+      14: ("R", "R2", "R'", "L", "L2", "L'"),
+      23: ("B", "B2", "B'", "R", "R2", "R'",),
+      25: ("D", "D2", "D'", "B", "B2", "B'"),
+      32: ("L", "L2", "L'", "B", "B2", "B'"),
+      }
+   x = RubikCubeXplorer()
+   x.embaralhaCubo(15)
+   cont2 = 0
+   while heur != -1 and cont2 < 100 :
+      cont2+= 1
+      heur_ant = x.cubo.obtemHeuristicaG1()
+      print("Melhor mov=", dic_movimentos[heur_ant][0], "heur=", heur_ant)
+      y=x.efetuaMovimentos(None, dic_movimentos[heur_ant][0], simulaCubo=True ) 
+      heur=y.obtemHeuristicaG1()
+      print("Heur=",heur )
+      cont=0
+      while heur_ant == heur and cont < 16 :
+         cont += 1
+         print("Plano#", cont, dic_movimentos[heur_ant][cont] )
+         y=x.efetuaMovimentos(None, dic_movimentos[heur_ant][cont], simulaCubo=True ) 
+         heur=y.obtemHeuristicaG1()
+         print("Heur=", heur )
+      print("Melhor mov=", dic_movimentos[heur_ant][cont], "heur=", heur)
+      x.efetuaMovimentos(None, dic_movimentos[heur_ant][cont], simulaCubo=True ) #Realizando o movimento
 #x = RubikCubeXplorer()
 #print (x.cubo)
 #exploraArvoreAmpla( rubikCube().obtemHeuristica )
 #exploraArvoreProfunda()
 #geraCubosGn(movimentos={0 : "F",   1 : "R",  2 : "L",  3 : "U",  4 : "D",  5 : "B", }) #Movimentos para G0
-geraCubosGn(movimentos={0 : "F",   1 : "R",  2 : "L",  3 : "U2", 4 : "D2", 5 : "B", }) #Movimentos para G1
+#geraCubosGn(movimentos={0 : "F",   1 : "R",  2 : "L",  3 : "U2", 4 : "D2", 5 : "B", }) #Movimentos para G1
 #geraCubosGn(movimentos={0 : "F2",  1 : "R",  2 : "L",  3 : "U2", 4 : "D2", 5 : "B2", }) #Movimentos para G2
 #geraCubosGn(movimentos={0 : "F2",  1 : "R2", 2 : "L2", 3 : "U2", 4 : "D2", 5 : "B2", }) #Movimentos para G3
-#x = RubikCubeXplorer()
 #x.cubo.obtemHeuristicaCanto()
+#geraMovimentosG1()
+exploraAteG1()
 #x.efetuaMovimentos(None, "L")
 #x.embaralhaCubo(10)
 #x.cubo.obtemHeuristicaCanto()
