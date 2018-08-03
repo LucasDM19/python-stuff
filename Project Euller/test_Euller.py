@@ -112,15 +112,15 @@ class TestProblem6(unittest.TestCase):
    def testSquareOfSum_10(self):
       self.assertEqual( squares_of_sum(10), 3025)
    def testProblem6_10(self):
-		self.assertEqual( problem6(10), 2640)
+      self.assertEqual( problem6(10), 2640)
    def testProblem6_100(self):
-		self.assertEqual( problem6(100), 25164150)
+      self.assertEqual( problem6(100), 25164150)
 
 class TestProblem7(unittest.TestCase):
    def testProblem7_6(self):
-		self.assertEqual( problem7(6), 13)
+      self.assertEqual( problem7(6), 13)
    def testProblem6_100001(self):
-		self.assertEqual( problem7(10001), 104743)
+      self.assertEqual( problem7(10001), 104743)
 
 class TestProblem8(unittest.TestCase):
    def testProblem8_4(self):

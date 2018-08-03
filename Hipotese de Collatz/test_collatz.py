@@ -1,3 +1,5 @@
+from collatz import *
+
 """
 	Hora de testar um pouco
 """
