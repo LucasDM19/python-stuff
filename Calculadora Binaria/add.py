@@ -20,9 +20,9 @@ def addBinary( number1, number2 ):
    c = 0 #Inicialmente, nao tem nada
    res = ""
    for i in range(1,len(number1)+1):
-      #print number1[-1*i], number2[-1*i]
-      (soma, c) = fullBinaryAdder(number1[-1*i], number2[-1*i], c)
-      print(soma)
+      (soma, cn) = fullBinaryAdder(number1[-1*i], number2[-1*i], c)
+      print("Op=",number1,number2, ", Soma=",soma, ", cn=", cn, ", n1=", number1[-1*i], ", n2=", number2[-1*i], ", c=", c)
+      c = cn
       res += "1" if soma else "0"
    return res
 

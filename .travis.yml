@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.6"
+# comando para instalar dependencias
+install:
+ - pip install -r requirements.txt
+ # comando para todar testes
+ script:
+  - python -m unittest discover -s "Calculadora Binaria"
+  - python -m unittest discover -s "Cartola FC"
+  - python -m unittest discover -s "Cubo Magico"
+  - python -m unittest discover -s "Hipotese de Collatz"
+  - python -m unittest discover -s "Jogo Rima Musical"
+  - python -m unittest discover -s "Project Euller"
+  - python -m unittest discover -s "Soccer Review"
