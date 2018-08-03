@@ -49,15 +49,15 @@ class Cube:
    def makeMoveF(self):
       prettyFace = self.faceF #Face temporaria
       prettyFace.rotate()     #A face sera girada, 90 graus em sentido horario
-      print self.faceU.line3, self.faceL.line2, self.faceD.line1, self.faceR.line4
-      print self.faceU.line3.color1, self.faceU.line3.color2, self.faceU.line3.color3
+      print(self.faceU.line3, self.faceL.line2, self.faceD.line1, self.faceR.line4)
+      print(self.faceU.line3.color1, self.faceU.line3.color2, self.faceU.line3.color3)
       l = self.faceU.getLine3() #Salvo linha
       self.faceU.line3 = self.faceL.getLine2()
       self.faceL.line2 = self.faceD.getLine1()
       self.faceD.line1 = self.faceR.getLine4()
       self.faceR.line4 = l
-      print self.faceU.line3, self.faceL.line2, self.faceD.line1, self.faceR.line4
-      print self.faceU.line3.color1, self.faceU.line3.color2, self.faceU.line3.color3
+      print(self.faceU.line3, self.faceL.line2, self.faceD.line1, self.faceR.line4)
+      print(self.faceU.line3.color1, self.faceU.line3.color2, self.faceU.line3.color3)
       self.faceF = prettyFace
 
    """ Rotaciona atras, em 90 graus, sentido horario """
@@ -183,7 +183,7 @@ class Face:
                   
    """ Quando rotaciono Down, sentido horario, em relacao a face em questao """
    def updateLineD( self, newLine ):
-      print str(self.line3) + "-" + str(newLine)
+      print(str(self.line3) + "-" + str(newLine))
       if self.line3 == newLine : #Nao faco nada, pois nao ha o que ser feito
          return
       lineN = self.line3 #Salvo ex-linha

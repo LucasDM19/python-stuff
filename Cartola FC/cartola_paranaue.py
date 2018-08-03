@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ï»¿# -*- coding: utf-8 -*-
 
 def mean(data):
     """Return the sample arithmetic mean of data."""
@@ -25,12 +25,12 @@ def pstdev(data):
 """
 Eu estava pensando em analisar, e ver se tem bons jogadores, que sejam regulares. 
 Escolher os jogadores que tragam mais retorno, com menos dinheiro. 
-Eu usaria o histórico do jogador para tirar o desvio padrão. 
-Aí tiraria a média/(desvio*custo).
-Os melhores nesse índice poderiam ser escalados, em teoria. 
+Eu usaria o histÃ³rico do jogador para tirar o desvio padrÃ£o. 
+AÃ­ tiraria a mÃ©dia/(desvio*custo).
+Os melhores nesse Ã­ndice poderiam ser escalados, em teoria. 
 """
 
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 
 #Montando um indice de jogadores, e pontuacao a cada rodada
@@ -46,8 +46,8 @@ lista_jsons =  {"R05" : 'http://aposte.me/t/cartola__5.json',
 				#"R14" : 'http://aposte.me/t/cartola__14.json',
 			   }
 dados = {} #lista com totais de pontuacao indexados pelo idx do jogador
-for rodada in lista_jsons.keys():
-	response = urllib2.urlopen(lista_jsons[rodada]) #response = urllib2.urlopen('http://aposte.me/t/cartola__5.json')
+for rodada in list(lista_jsons.keys()):
+	response = urllib.request.urlopen(lista_jsons[rodada]) #response = urllib2.urlopen('http://aposte.me/t/cartola__5.json')
 	data = json.load(response)   
 	
 	for i in range(len(data["jogadores"])):
@@ -63,6 +63,6 @@ for rodada in lista_jsons.keys():
 	
 #Uso de 5 a 9 para calcular DP e media. 10 a 14 sao palpites.
 #Para rodada 10, inicialmente
-for jogador in dados.keys():
+for jogador in list(dados.keys()):
 	if len(dados[jogador]) > 2 and pstdev( dados[jogador] ) != 0 :
-		print "jogador=", jogador, "DP=", pstdev( dados[jogador] ), "Media=", mean( dados[jogador] ), "Md/dp", mean( dados[jogador] )/pstdev( dados[jogador] )
+		print("jogador=", jogador, "DP=", pstdev( dados[jogador] ), "Media=", mean( dados[jogador] ), "Md/dp", mean( dados[jogador] )/pstdev( dados[jogador] ))

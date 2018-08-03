@@ -1,3 +1,5 @@
+from add import *
+
 # Here's our "unit tests".
 import unittest
 class TestLogicalOperators(unittest.TestCase):

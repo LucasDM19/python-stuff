@@ -18,7 +18,7 @@ def collatizator( number ):
    return res + "1"
 
 def main():
-    print "Rode os testes!"
+    print("Rode os testes!")
 		
 if __name__ == '__main__':
 	main()   

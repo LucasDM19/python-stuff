@@ -22,7 +22,7 @@ def main():
     unittest.main()
 		
 if __name__ == '__main__':
-	print ">>A little bit of testing, in the sun"
+	print(">>A little bit of testing, in the sun")
 	main()
 		
 	#print ">>A little bit of printing, all night long"

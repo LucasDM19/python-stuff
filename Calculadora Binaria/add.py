@@ -22,12 +22,12 @@ def addBinary( number1, number2 ):
    for i in range(1,len(number1)+1):
       #print number1[-1*i], number2[-1*i]
       (soma, c) = fullBinaryAdder(number1[-1*i], number2[-1*i], c)
-      print soma
+      print(soma)
       res += "1" if soma else "0"
    return res
 
 def main():
-    print "Rode os testes!"
+    print("Rode os testes!")
    
 if __name__ == '__main__':
     main()

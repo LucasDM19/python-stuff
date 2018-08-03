@@ -1,11 +1,11 @@
  # -*- coding: utf-8 -*-
  
-import urllib, json
+import urllib.request, urllib.parse, urllib.error, json
 
 def primeiraBandaPesquisaPorNome(trecho):
 	#url = "http://api.vagalume.com.br/search.excerpt?q=vamos fugir&limit=10"
 	url = "http://api.vagalume.com.br/search.excerpt?q="+ trecho +"&limit=3"
-	response = urllib.urlopen(url.encode('utf-8'))
+	response = urllib.request.urlopen(url.encode('utf-8'))
 	data = json.loads(response.read())
 	#print data
 	#print "#Nome da musica:" + data["response"]["docs"][0]["title"] + " - Banda: " + data["response"]["docs"][0]["band"]
@@ -13,7 +13,7 @@ def primeiraBandaPesquisaPorNome(trecho):
 	#	print "Nome da musica:" + d["title"] + " - Banda: " + d["band"]
 	
 	if data["response"]["numFound"] == 0 :
-		print "Zica!"
+		print("Zica!")
 	
 	nome_musica = data["response"]["docs"][0]["title"]
 	nome_banda = data["response"]["docs"][0]["band"]	
@@ -21,15 +21,15 @@ def primeiraBandaPesquisaPorNome(trecho):
 	
 def ultimaPalavraUltimaLinha(nome_banda, nome_musica):
 	url = "http://api.vagalume.com.br/search.php?art=" + nome_banda + "&mus=" + nome_musica
-	response = urllib.urlopen(url.encode('utf-8'))
+	response = urllib.request.urlopen(url.encode('utf-8'))
 	data = json.loads(response.read())
 	#print data["mus"][0]["text"]
 	
 	if data["type"] == "song_notfound" :
-		print "Zica!"
+		print("Zica!")
 	
 	letra1 = data["mus"][0]["text"].split("\n") #\n ou \n\n
-	letra = [l for l in letra1 if l != "" and l != u'[Refr\xe3o]'] #elimino linhas em branco
+	letra = [l for l in letra1 if l != "" and l != '[Refr\xe3o]'] #elimino linhas em branco
 	#print letra
 	
 	from random import randint
@@ -50,4 +50,4 @@ if __name__ == "__main__":
 	for x in range(50):
 		nome_banda, nome_musica = primeiraBandaPesquisaPorNome(ultima)
 		ultima = ultimaPalavraUltimaLinha(nome_banda, nome_musica)
-		print ultima + ",A:" + nome_banda + ",M:" + nome_musica
+		print(ultima + ",A:" + nome_banda + ",M:" + nome_musica)

@@ -1,6 +1,6 @@
 ﻿
 def main():
-    print "Rode os testes!"
+    print("Rode os testes!")
 
 """
    If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.
@@ -58,7 +58,7 @@ def prime_factors(x):
 def sieveOfEratosthenes(max_number):
    import math
    checkUntil = int(math.sqrt(max_number))+1
-   listOfNumbers = xrange(2,max_number)
+   listOfNumbers = range(2,max_number)
    for i in range(2,checkUntil):
       listOfNumbers = [number for number in listOfNumbers if (number % i != 0 or number <= i )]
       #print i, listOfNumbers
@@ -101,7 +101,7 @@ def isPalindromicNumberVeryVerySlow(number):
    What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
 """
 def problem5(max_number):
-   return mmc(range(1,max_number+1))
+   return mmc(list(range(1,max_number+1)))
    
 #Calcula o MDC entre dois numeros.
 def mdc(a,b):
@@ -131,7 +131,7 @@ def problem5_old(max_number):
          if candidate % number != 0 : 
             foundNumber = False
             break
-      print candidate
+      print(candidate)
       candidate += 1
    return min(candidates)
 
@@ -271,7 +271,7 @@ Find the sum of all the primes below two million.
 """
 #Metodo para gerar uma lista numeros primos abaixo de maxNumber
 def getPrimesBelow(maxNumber):
-   numeros = range(2, maxNumber)
+   numeros = list(range(2, maxNumber))
    i = 0
    while True:
    #for i in range( int(maxNumber ** 0.5) ): #Euller ai

@@ -32,9 +32,9 @@ class TestCube(unittest.TestCase):
       
    def testCubeSimple(self):
       c = Cube()
-      print c #Antes
+      print(c) #Antes
       c.makeMoveF() #Giro a frente
-      print c #Depois
+      print(c) #Depois
    
 def main():
     unittest.main()

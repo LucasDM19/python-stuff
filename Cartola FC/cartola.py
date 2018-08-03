@@ -29,7 +29,7 @@ Precisa do esquema tatico passado como parametro.
 Retorna o total da media estimada.
 """
 def modelaCalcula(Esquema_Tatico,silencio=True):
-	if not silencio : print "Esquema: ", Esquema_Tatico
+	if not silencio : print("Esquema: ", Esquema_Tatico)
 	prob = LpProblem("Melhor escalacao Cartola FC", LpMaximize)
 
 	#Coloca a primeira condicão, que será o objetivo. Queremos a maior média conjunta
@@ -63,20 +63,20 @@ def modelaCalcula(Esquema_Tatico,silencio=True):
 	   nome_idx = variable.name[2:].replace("_"," ") #Macumba para obter nome
 	   if variable.varValue: soma_precos += precos[nome_idx]
 	   if variable.varValue: soma_medias += medias[nome_idx]
-	   if not silencio and variable.varValue: print variable.name, "==", variable.varValue, "$", precos[nome_idx], "%", medias[nome_idx]
+	   if not silencio and variable.varValue: print(variable.name, "==", variable.varValue, "$", precos[nome_idx], "%", medias[nome_idx])
 	   #print variable.name, ">", variable.varValue
 	
 	if not silencio:
-		print "A media conjunta esperada do time: %0.2f" % value(prob.objective)
-		print "A soma dos precos: %0.2f" % soma_precos
-		print "A soma das medias: %0.2f" % soma_medias
-		print ""
+		print("A media conjunta esperada do time: %0.2f" % value(prob.objective))
+		print("A soma dos precos: %0.2f" % soma_precos)
+		print("A soma das medias: %0.2f" % soma_medias)
+		print("")
 	
 	return soma_medias #Se for o caso, pode retornar value(prob.objective)
 	
 import sys
 from pulp import *
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 import json
 
 #Esquema_Tatico='4-3-3'
@@ -90,7 +90,7 @@ esquema={'4-3-3':{'GOL':1, 'ZAG':2, 'LAT':2, 'MEI':3, 'ATA':3, 'TEC': 1 },
          '5-4-1':{'GOL':1, 'ZAG':3, 'LAT':2, 'MEI':4, 'ATA':1, 'TEC': 1 },
          '5-3-2':{'GOL':1, 'ZAG':3, 'LAT':2, 'MEI':3, 'ATA':2, 'TEC': 1 } }
 
-response = urllib2.urlopen('http://aposte.me/t/cartola__10.json')
+response = urllib.request.urlopen('http://aposte.me/t/cartola__10.json')
 data = json.load(response)   
 
 #Seleciona todos os jogadores com Status Provável que participaram de pelo menos 3 jogos
@@ -130,8 +130,8 @@ for j in obj_jogadores:
 	#"R10" : 'http://aposte.me/t/cartola__10.json',
 	}
     puntos = [] #Guardo as pontuacoes de cada rodada, desse jogador
-    for rodada in lista_jsons.keys():
-		responsex = urllib2.urlopen(lista_jsons[rodada])
+    for rodada in list(lista_jsons.keys()):
+		responsex = urllib.request.urlopen(lista_jsons[rodada])
 		datax = json.load(responsex) 
 		for i in range(len(datax["jogadores"])):
 			nomex = datax["jogadores"][i]['apelido']+'(' + datax["jogadores"][i]['clube']['abreviacao'] +')' + ' ' +datax["jogadores"][i]['posicao']['abreviacao']
@@ -151,7 +151,7 @@ jogadores_vars = LpVariable.dicts("_",Jogadores,lowBound = 0,upBound = 1,cat='In
 #Adicionei uma lista de esquemas táticos. Para ver qual pode render mais
 max_media = 0.0 #Maximo de retorno
 max_esq = "" #Nome do melhor esquema tatico
-for Esquema_Tatico in esquema.keys():
+for Esquema_Tatico in list(esquema.keys()):
 	soma_medias = modelaCalcula(Esquema_Tatico,silencio=True) #Calculo retorno para o esquema tatico especifico
 	
 	#Avaliando esquema tatico que gera retorno maximo

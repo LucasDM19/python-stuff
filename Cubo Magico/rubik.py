@@ -341,7 +341,7 @@ def exploraArvoreAmpla( func_heuristica ):
    operacoes_g0 =   ["F" , "R" , "L" , "U" , "D" , "B" ]
    melhor_mov = ""
    melhor_heu = x.cubo.obtemHeuristica()
-   print("Inicio. H=", melhor_heu)
+   print(("Inicio. H=", melhor_heu))
    contador=0
    max_profun = 4  #Ate onde a arvore ira
    for ram in range(1,max_profun+1): #Como uma espiral, varre a arvore, item a item.
@@ -353,7 +353,7 @@ def exploraArvoreAmpla( func_heuristica ):
          if c2.obtemHeuristica() < melhor_heu:
             melhor_heu = c2.obtemHeuristica()
             melhor_mov = mov
-            print("#", contador, "Ram=", ram, "Mov=", melhor_mov, ", H=", melhor_heu)
+            print(("#", contador, "Ram=", ram, "Mov=", melhor_mov, ", H=", melhor_heu))
    x.efetuaMovimentos(melhor_mov, None, simulaCubo=False) #Aplico o melhor movimento
    print((x.cubo))
    
@@ -364,7 +364,7 @@ def exploraArvoreProfunda():
    print((x.cubo))
    x.embaralhaCubo(10)
    print((x.cubo))
-   print ("Heuristica inicial:", x.cubo.obtemHeuristicaCanto() )
+   print(("Heuristica inicial:", x.cubo.obtemHeuristicaCanto() ))
    #prof_ramo=25  #Profundidade maxima a ser buscada
    #switcher = {0 : "F",  1 : "R", 2 : "L", 3 : "U", 4 : "D", 5 : "B", }
    #from random import randrange
@@ -380,7 +380,7 @@ def exploraArvoreProfunda():
       if c2.obtemHeuristicaCanto() < melhor_heu:
          melhor_heu = c2.obtemHeuristicaCanto()
          melhor_movs = movimento  #Por enquanto apenas isso
-         print ( "Etapa #", cont, ", heur=", c2.obtemHeuristicaCanto(), ", movs=", movimento )
+         print(( "Etapa #", cont, ", heur=", c2.obtemHeuristicaCanto(), ", movs=", movimento ))
       cont += 1
    x.efetuaMovimentos( melhor_movs, None  ) #A melhor opcao fica sendo a atual
    print((x.cubo))
@@ -416,11 +416,11 @@ def geraCubosGn(movimentos):
    #for i in range(54):
       #print(",".join(str(matriz_total[i][j]) for j in range(54)))
    for id in range(54):
-      print( "Coor=", traduzIndiceCoordenada(id) )
+      print(( "Coor=", traduzIndiceCoordenada(id) ))
       for valor in range(54):
          if( (defineCantoMeioCentro(traduzIndiceCoordenada(id)) != "k") 
          and (defineCantoMeioCentro(traduzIndiceCoordenada(id)) == defineCantoMeioCentro(traduzIndiceCoordenada(valor))) ): #Valores especificos
-            print("linha=", traduzIndiceCoordenada(valor), "->", matriz_total[id][valor], "(", 100.0*matriz_total[id][valor]/2000, "%)" )
+            print(("linha=", traduzIndiceCoordenada(valor), "->", matriz_total[id][valor], "(", 100.0*matriz_total[id][valor]/2000, "%)" ))
    dic_ids = {} #Dicionario de movimentos a serem buscados
    for id in range(54):
       for valor in range(54):
@@ -432,7 +432,7 @@ def geraCubosGn(movimentos):
             dic_ids[traduzIndiceCoordenada(id)].append( traduzIndiceCoordenada(valor) )
    # dic_faces = {} #Contabilizar por tipo de coordenada (linha, coluna)
    for id in dic_ids:
-      print( "ID=", id, ", len=", len(dic_ids[id]), "->", dic_ids[id] )
+      print(( "ID=", id, ", len=", len(dic_ids[id]), "->", dic_ids[id] ))
       # for p in dic_ids[id]:
          # #if( (p[1], p[2] ) not in dic_faces ): dic_faces[(p[1], p[2] )] = 0
          # if( p[0] not in dic_faces ): dic_faces[p[0]] = []
@@ -471,11 +471,11 @@ def geraMovimentosG1():
    from collections  import OrderedDict
    sorted_dic_heur = {}
    for h in dic_heur:
-      sorted_x = OrderedDict(sorted(dic_heur[h].items(), key=lambda x: x[1]))
+      sorted_x = OrderedDict(sorted(list(dic_heur[h].items()), key=lambda x: x[1]))
       #print(sorted_x)
       dic_heur[h] = sorted_x
    for h in dic_heur:
-      print ("Heur=", h, "Movs=",dic_heur[h] )
+      print(("Heur=", h, "Movs=",dic_heur[h] ))
       
 def exploraAteG1():
    dic_movimentos={
@@ -496,18 +496,18 @@ def exploraAteG1():
    while heur != -1 and cont2 < 100 :
       cont2+= 1
       heur_ant = x.cubo.obtemHeuristicaG1()
-      print("Melhor mov=", dic_movimentos[heur_ant][0], "heur=", heur_ant)
+      print(("Melhor mov=", dic_movimentos[heur_ant][0], "heur=", heur_ant))
       y=x.efetuaMovimentos(None, dic_movimentos[heur_ant][0], simulaCubo=True ) 
       heur=y.obtemHeuristicaG1()
-      print("Heur=",heur )
+      print(("Heur=",heur ))
       cont=0
       while heur_ant == heur and cont < 16 :
          cont += 1
-         print("Plano#", cont, dic_movimentos[heur_ant][cont] )
+         print(("Plano#", cont, dic_movimentos[heur_ant][cont] ))
          y=x.efetuaMovimentos(None, dic_movimentos[heur_ant][cont], simulaCubo=True ) 
          heur=y.obtemHeuristicaG1()
-         print("Heur=", heur )
-      print("Melhor mov=", dic_movimentos[heur_ant][cont], "heur=", heur)
+         print(("Heur=", heur ))
+      print(("Melhor mov=", dic_movimentos[heur_ant][cont], "heur=", heur))
       x.efetuaMovimentos(None, dic_movimentos[heur_ant][cont], simulaCubo=True ) #Realizando o movimento
 #x = RubikCubeXplorer()
 #print (x.cubo)
