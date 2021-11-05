@@ -82,7 +82,7 @@ def isPalindromicNumber(number):
    n2=0
    while n1 >= 10 :
       n2=n2*10+(n1%10)
-      n1=n1/10
+      n1=int(n1/10) # Divisao inteira
    n2=n2*10+(n1%10)
    if n2-number==0: return True
    return False

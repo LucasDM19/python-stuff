@@ -153,7 +153,7 @@ class TestProblem10(unittest.TestCase):
    def testProblem10_2000000(self):
       self.assertEqual( problem10(2000000), 142913828922 )  #Esse teste demora cinco segundos
       
-class TestProblem10(unittest.TestCase):
+class TestProblem11(unittest.TestCase):
    def testMatrixConversion_simples(self):
       self.assertEqual( convertStringToMatrix("08 02 22 97"), [[8, 2, 22, 97]] )
    def testMatrixConversion_umaLinha(self):
